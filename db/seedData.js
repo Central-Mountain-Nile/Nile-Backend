@@ -1,5 +1,7 @@
 const client = require("./client");
 
+const {createCategories} = require('/')
+
 async function dropTables() {
   console.log("Dropping All Tables...");
   // drop all tables, in the correct order
@@ -144,6 +146,33 @@ async function createTables() {
   } catch (error) {
     console.error("Error building tables!");
     throw error;
+  }
+}
+
+
+async function createCategories() {
+  console.log("Pulling categories...")
+  try {
+    const categoriesToCreate = [
+      {Appliances},
+      {Auto},
+      {Books},
+      {Clothing},
+      {Electronics},
+      {Gaming},
+      {Jewlery},
+      {Lifestyle},
+      {Muic},
+      {Pets},
+      {Sports},
+      {Tools}
+
+    ]
+    const categories = await Promise.all(categoriesToCreate.map(createCategories))
+    console.log(categories)
+
+  } catch (error) {
+    console.log("Error creating categories")
   }
 }
 
