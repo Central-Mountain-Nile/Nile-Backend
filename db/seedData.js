@@ -1,7 +1,8 @@
 const client = require("./client");
 const { createUsers } = require("./");
 
-const {createCategories} = require('./')
+const {createCategories} = require('./');
+const { createCart } = require("./cart");
 
 async function dropTables() {
   console.log("Dropping All Tables...");
@@ -194,17 +195,17 @@ async function createInitialUsers() {
       },
     ];
     const users = await Promise.all(usersToCreate.map(createUsers));
-
     console.log("Users created:");
     console.log(users);
     console.log("Finished creating users!");
+    
 
   } catch (error) {
     console.error("Error creating users!");
     throw error;
   }
 }
-async function createCategories() {}
+async function createInitialCategories() {}
 async function createInitialProducts() {}
 async function createInitialDiscounts() {}
 async function createInitialCarts() {}
@@ -216,7 +217,7 @@ async function rebuildDB() {
     await dropTables();
     await createTables();
     await createInitialUsers();
-    await createCategories();
+    await createInitialCategories();
     await createInitialProducts();
     await createInitialDiscounts();
     await createInitialCarts();
