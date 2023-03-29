@@ -193,7 +193,6 @@ async function createInitialUsers() {
     console.log("Users created:");
     console.log(users);
     console.log("Finished creating users!");
-    
 
   } catch (error) {
     console.error("Error creating users!");
