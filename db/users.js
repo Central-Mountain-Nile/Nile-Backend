@@ -2,19 +2,18 @@ const client = require("./client");
 // const bcrypt = require("bcrypt");
 
 async function createUser({
-  username,
-  password,
   firstName,
   lastName,
-  isActive,
-  isAdmin,
-  addressLine1,
-  addressLine2,
+  username,
+  password,
+  addressLineOne,
+  addressLineTwo,
   city,
   state,
   country,
   postalCode,
-  CreatedAt,
+  createdAt,
+  email,
 }) {
   //   const SALT_COUNT = 10;
   //   const hashpassword = await bcrypt.hash(password, SALT_COUNT);
@@ -25,38 +24,24 @@ async function createUser({
     } = await client.query(
       `
         INSERT INTO users(  
-          username,
-          password,
           firstName,
           lastName,
-          isActive,
-          isAdmin,
-          addressLine1,
-          addressLine2,
+          username,
+          password,
+          addressLineOne,
+          addressLineTwo,
           city,
           state,
           country,
           postalCode,
-          CreatedAt)
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+          createdAt,
+          email)
+  VALUES('${firstName}', '${lastName}', '${username}', '${password}', 
+     '${addressLineOne}', '${addressLineTwo}', 
+    '${city}', '${state}', '${country}', ${postalCode}, '${createdAt}', '${email}')
         ON CONFLICT (username) DO NOTHING
         RETURNING *;
-        `,
-      [
-        username,
-        password,
-        firstName,
-        lastName,
-        isActive,
-        isAdmin,
-        addressLine1,
-        addressLine2,
-        city,
-        state,
-        country,
-        postalCode,
-        CreatedAt,
-      ]
+        `
     );
     delete users.password;
     return users;
@@ -99,10 +84,28 @@ async function getUsersById(usersId) {
     throw error;
   }
 }
+async function getUser({ username, password }) {
+  try {
+    const {
+      rows: [users],
+    } = await client.query(
+      `
+      SELECT * FROM users 
+      WHERE username = $1;
+    `,
+      [username]
+    );
+    if (password === users.password) {
+      delete users.password;
+      return users;
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 async function patchUsers({ usersId, ...fields }) {
-  // don't try to update the id
-  // do update the name and description
-  // return the updated activity
   const setString = Object.keys(fields)
     .map((key, index) => `"${key}"=$${index + 1}`)
     .join(", ");
@@ -144,6 +147,7 @@ async function deleteUsers(usersId) {
 }
 module.exports = {
   createUser,
+  getUser,
   getUsersById,
   getUsersByUsername,
   patchUsers,
