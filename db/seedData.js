@@ -149,33 +149,6 @@ async function createTables() {
   }
 }
 
-
-async function createCategories() {
-  console.log("Pulling categories...")
-  try {
-    const categoriesToCreate = [
-      {Appliances},
-      {Auto},
-      {Books},
-      {Clothing},
-      {Electronics},
-      {Gaming},
-      {Jewlery},
-      {Lifestyle},
-      {Muic},
-      {Pets},
-      {Sports},
-      {Tools}
-
-    ]
-    const categories = await Promise.all(categoriesToCreate.map(createCategories))
-    console.log(categories)
-
-  } catch (error) {
-    console.log("Error creating categories")
-  }
-}
-
 async function createInitialUsers() {}
 async function createCategories() {}
 async function createInitialProducts() {}
