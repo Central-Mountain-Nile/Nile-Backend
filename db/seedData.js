@@ -1,6 +1,9 @@
 const client = require("./client");
 const { createUser } = require("./users");
-const {createCategories} = require("./productCategory")
+const {createCategories} = require("./productCategory");
+const { createProduct } = require("./products");
+
+
 async function dropTables() {
   console.log("Dropping All Tables...");
   // drop all tables, in the correct order
@@ -187,6 +190,7 @@ async function createInitialUsers() {
         email: "testing@test3.com",
       },
     ];
+    
     const users = await Promise.all(usersToCreate.map(createUser));
     console.log("Users created:");
     console.log(users);
@@ -224,9 +228,44 @@ async function createInitialCategories() {
 
 }
 
+async function createInitialProducts() {
+  console.log("Starting to create products...");
+  const productsToCreate = [
+    {creatorId:1, categorYId:1, name:"testProduct1", description:"initial product",price:10.00,quantity:300,img:""},
+    {name:"clothing"},
+    {name:"jewelry"},
+    {name:"music"},
+    {name:"auto"},
+    {name:"gaming"},
+    {name:"pets"},
+    {name:"sports/lifestyle"},
+    {name:"tools/appliances"},
+    {name:"books"},
+  ];
+  try{
+
+    // CREATE TABLE products (
+    //   id SERIAL PRIMARY KEY,
+    //   creatorId INTEGER REFERENCES users(id),
+    //   categoryId INTEGER REFERENCES product_category(id),
+    //   name VARCHAR(255) UNIQUE NOT NULL,
+    //   description TEXT NOT NULL,
+    //   price DECIMAL NOT NULL,
+    //   quantity INTEGER NOT NULL,
+    //   img BYTEA NOT NULL,
+    //   active BOOLEAN DEFAULT TRUE
+    //   );
+    const products = await Promise.all(productsToCreate.map(createProduct))
+    console.log(products)
+    console.log("Finished creating products!");
+  }catch (error) {
+  console.error("Error creating products!");
+  throw error;
+}
+}
 
 
-async function createInitialProducts() {}
+
 async function createInitialDiscounts() {}
 async function createInitialCarts() {}
 async function createInitialPayments() {}
