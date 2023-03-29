@@ -1,15 +1,14 @@
 const client = require("./client");
-const { createUsers } = require("./");
+const { createUser } = require("./users");
+const {createCategories} = require("./productCategory");
+const { createProduct } = require("./products");
 
-const {createCategories} = require('./');
-const { createCart } = require("./cart");
 
 async function dropTables() {
   console.log("Dropping All Tables...");
   // drop all tables, in the correct order
   try {
     console.log("Starting to drop tables...");
-
 
     await client.query(`
       DROP TABLE IF EXISTS discounts;
@@ -162,8 +161,7 @@ async function createInitialUsers() {
         state: "Texas",
         country: "US",
         postalCode: "75071",
-        createdAt: "12:00",
-        email: "testing@test.com",
+        email: "testing@test1.com",
       },
       {
         firstName: "John",
@@ -176,8 +174,7 @@ async function createInitialUsers() {
         state: "Georgia",
         country: "US",
         postalCode: "30040",
-        createdAt: "12:00",
-        email: "testing@test.com",
+        email: "testing@test2.com",
       },
       {
         firstName: "Jake",
@@ -190,23 +187,85 @@ async function createInitialUsers() {
         state: "Texas",
         country: "US",
         postalCode: "75071",
-        createdAt: "12:00",
-        email: "testing@test.com",
+        email: "testing@test3.com",
       },
     ];
-    const users = await Promise.all(usersToCreate.map(createUsers));
+    
+    const users = await Promise.all(usersToCreate.map(createUser));
     console.log("Users created:");
     console.log(users);
     console.log("Finished creating users!");
-    
-
   } catch (error) {
     console.error("Error creating users!");
     throw error;
   }
 }
-async function createInitialCategories() {}
-async function createInitialProducts() {}
+async function createInitialCategories() {
+  console.log("Starting to create categories...");
+  const categoriesToCreate = [
+    {name:"electronics"},
+    {name:"clothing"},
+    {name:"jewelry"},
+    {name:"music"},
+    {name:"auto"},
+    {name:"gaming"},
+    {name:"pets"},
+    {name:"sports/lifestyle"},
+    {name:"tools/appliances"},
+    {name:"books"},
+  ];
+  try{
+
+
+    const categories = await Promise.all(categoriesToCreate.map(createCategories))
+    console.log(categories)
+    console.log("Finished creating categories!");
+  }catch (error) {
+  console.error("Error creating categories!");
+  throw error;
+}
+  
+
+}
+
+async function createInitialProducts() {
+  console.log("Starting to create products...");
+  const productsToCreate = [
+    {creatorId:1, categorYId:1, name:"testProduct1", description:"initial product",price:10.00,quantity:300,img:""},
+    {name:"clothing"},
+    {name:"jewelry"},
+    {name:"music"},
+    {name:"auto"},
+    {name:"gaming"},
+    {name:"pets"},
+    {name:"sports/lifestyle"},
+    {name:"tools/appliances"},
+    {name:"books"},
+  ];
+  try{
+
+    // CREATE TABLE products (
+    //   id SERIAL PRIMARY KEY,
+    //   creatorId INTEGER REFERENCES users(id),
+    //   categoryId INTEGER REFERENCES product_category(id),
+    //   name VARCHAR(255) UNIQUE NOT NULL,
+    //   description TEXT NOT NULL,
+    //   price DECIMAL NOT NULL,
+    //   quantity INTEGER NOT NULL,
+    //   img BYTEA NOT NULL,
+    //   active BOOLEAN DEFAULT TRUE
+    //   );
+    const products = await Promise.all(productsToCreate.map(createProduct))
+    console.log(products)
+    console.log("Finished creating products!");
+  }catch (error) {
+  console.error("Error creating products!");
+  throw error;
+}
+}
+
+
+
 async function createInitialDiscounts() {}
 async function createInitialCarts() {}
 async function createInitialPayments() {}

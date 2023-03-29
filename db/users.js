@@ -1,3 +1,4 @@
+const { createCart } = require("./cart");
 const client = require("./client");
 // const bcrypt = require("bcrypt");
 
@@ -12,7 +13,6 @@ async function createUser({
   state,
   country,
   postalCode,
-  createdAt,
   email,
 }) {
   //   const SALT_COUNT = 10;
@@ -20,7 +20,7 @@ async function createUser({
 
   try {
     const {
-      rows: [users],
+      rows: [user],
     } = await client.query(
       `
         INSERT INTO users(  
@@ -38,13 +38,16 @@ async function createUser({
           email)
   VALUES('${firstName}', '${lastName}', '${username}', '${password}', 
      '${addressLineOne}', '${addressLineTwo}', 
-    '${city}', '${state}', '${country}', ${postalCode}, '${createdAt}', '${email}')
+    '${city}', '${state}', '${country}', ${postalCode}, to_timestamp(${Date.now()} / 1000.0), '${email}')
         ON CONFLICT (username) DO NOTHING
         RETURNING *;
         `
     );
-    delete users.password;
-    return users;
+    delete user.password;
+
+    const cart = await createCart(user.id)
+    user.cart = cart
+    return user;
   } catch (error) {
     throw error;
   }
