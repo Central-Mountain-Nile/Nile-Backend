@@ -1,8 +1,6 @@
 const client = require("./client");
-const { createUsers } = require("./");
+const { createUser } = require("./users");
 
-const {createCategories} = require('./');
-const { createCart } = require("./cart");
 
 async function dropTables() {
   console.log("Dropping All Tables...");
@@ -162,8 +160,7 @@ async function createInitialUsers() {
         state: "Texas",
         country: "US",
         postalCode: "75071",
-        createdAt: "12:00",
-        email: "testing@test.com",
+        email: "testing@test1.com",
       },
       {
         firstName: "John",
@@ -176,8 +173,7 @@ async function createInitialUsers() {
         state: "Georgia",
         country: "US",
         postalCode: "30040",
-        createdAt: "12:00",
-        email: "testing@test.com",
+        email: "testing@test2.com",
       },
       {
         firstName: "Jake",
@@ -190,11 +186,10 @@ async function createInitialUsers() {
         state: "Texas",
         country: "US",
         postalCode: "75071",
-        createdAt: "12:00",
-        email: "testing@test.com",
+        email: "testing@test3.com",
       },
     ];
-    const users = await Promise.all(usersToCreate.map(createUsers));
+    const users = await Promise.all(usersToCreate.map(createUser));
     console.log("Users created:");
     console.log(users);
     console.log("Finished creating users!");

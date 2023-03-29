@@ -12,7 +12,6 @@ async function createUser({
   state,
   country,
   postalCode,
-  createdAt,
   email,
 }) {
   //   const SALT_COUNT = 10;
@@ -38,7 +37,7 @@ async function createUser({
           email)
   VALUES('${firstName}', '${lastName}', '${username}', '${password}', 
      '${addressLineOne}', '${addressLineTwo}', 
-    '${city}', '${state}', '${country}', ${postalCode}, '${createdAt}', '${email}')
+    '${city}', '${state}', '${country}', ${postalCode}, to_timestamp(${Date.now()} / 1000.0), '${email}')
         ON CONFLICT (username) DO NOTHING
         RETURNING *;
         `
