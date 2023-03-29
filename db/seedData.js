@@ -2,6 +2,7 @@ const client = require("./client");
 const { createUser } = require("./users");
 const { createCategories } = require("./productCategory");
 const { createProduct } = require("./products");
+const { addToCart, getCart } = require("./cart");
 
 function makeid(length) {
   let result = "";
@@ -252,7 +253,28 @@ async function createInitialProducts() {
 }
 
 async function createInitialDiscounts() {}
-async function createInitialCarts() {}
+async function createInitialCarts() {
+  console.log("Starting to fill carts...");
+  try{
+    for(let i = 0; i < users.length;i++){//for every user
+      for(let j = 0; j< 5;j++){//add this many items to their cart
+        const productId = Math.floor(Math.random() * (products.length - 1)) + 1;
+        const quantity = Math.floor(Math.random() * 100) + 1;
+        const cartId = users[i].cart.id
+          await addToCart({productId,cartId,quantity})
+      }
+    }
+    for(let i = 0; i < users.length; i++){
+      console.log(await getCart(users[i].id))
+    }
+    console.log("Finished filling carts!");
+  }catch(e){
+    console.error("Error filling carts!");
+    throw e
+  }
+
+
+}
 async function createInitialPayments() {}
 async function createInitialOrderHistory() {}
 
