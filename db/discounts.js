@@ -6,9 +6,6 @@ async function createDiscount({
   description,
   discount_percent,
   active,
-  created_at,
-  modified_at,
-  deleted_at,
 }) {
   try {
     const { rows } = await client.query(
@@ -19,24 +16,13 @@ async function createDiscount({
                 description,
                 discount_percent,
                 active,
-                created_at,
-                modified_at,
-                deleted_at)
-            VALUES($1, $2, $3, $4, $5, $6, $7, $8),
+                created_at,)
+            VALUES($1, $2, $3, $4, $5, to_timestamp(${Date.now()} / 1000.0)),
             ON CONFLICT (name) DO NOTHING,
             RETURNING *;
             `,
 
-      [
-        product_id,
-        name,
-        description,
-        discount_percent,
-        active,
-        created_at,
-        modified_at,
-        deleted_at,
-      ]
+      [product_id, name, description, discount_percent, active]
     );
     return rows;
   } catch (error) {
@@ -77,6 +63,7 @@ async function getDiscountsByProduct({ product_id }) {
 }
 
 async function editDiscounts({ usersId, ...fields }) {
+  fields.modifiedAt = "to_timestamp(${Date.now()} / 1000.0)";
   const setString = Object.keys(fields)
     .map((key, index) => `"${key}"=$${index + 1}`)
     .join(", ");
