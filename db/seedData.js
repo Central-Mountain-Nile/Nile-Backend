@@ -1,14 +1,14 @@
 const client = require("./client");
+const { createUser } = require("./users");
+const {createCategories} = require("./productCategory");
+const { createProduct } = require("./products");
 
-const {createCategories} = require('/')
 
 async function dropTables() {
   console.log("Dropping All Tables...");
   // drop all tables, in the correct order
   try {
     console.log("Starting to drop tables...");
-
-    const client = await pool.connect();
 
     await client.query(`
       DROP TABLE IF EXISTS discounts;
@@ -24,7 +24,6 @@ async function dropTables() {
         `);
 
     console.log("Finished dropping tables!");
-    await client.release();
   } catch (error) {
     console.error("Error dropping tables!");
     throw error;
@@ -36,7 +35,6 @@ async function createTables() {
   // create all tables, in the correct order
   try {
     console.log("Starting to build tables...");
-    const client = await pool.connect();
     await client.query(`
         CREATE TABLE product_category (
         id SERIAL PRIMARY KEY,
@@ -47,28 +45,28 @@ async function createTables() {
     await client.query(`
         CREATE TABLE users (
         id SERIAL PRIMARY KEY,
-        first_name VARCHAR(255) NOT NULL,
-        last_name VARCHAR(255) NOT NULL,
+        firstName VARCHAR(255) NOT NULL,
+        lastName VARCHAR(255) NOT NULL,
         username varchar(255) UNIQUE NOT NULL,
         password varchar(255) NOT NULL,
-        is_active boolean DEFAULT TRUE,
-        is_admin boolean DEFAULT FALSE,
+        isActive boolean DEFAULT TRUE,
+        isAdmin boolean DEFAULT FALSE,
         email VARCHAR(255) UNIQUE NOT NULL,
-        address_line_one VARCHAR(255) NOT NULL,
-        address_line_two VARCHAR(255),
+        addressLineOne VARCHAR(255) NOT NULL,
+        addressLineTwo VARCHAR(255),
         city VARCHAR(255) NOT NULL,
         state VARCHAR(255),
         country VARCHAR(255) NOT NULL,
-        postal_code INTEGER NOT NULL,
-        created_at TIMESTAMP NOT NULL
+        postalCode INTEGER NOT NULL,
+        createdAt TIMESTAMP NOT NULL
           );
         `);
 
     await client.query(`
         CREATE TABLE products (
         id SERIAL PRIMARY KEY,
-        creator_id INTEGER REFERENCES users(id),
-        category_id INTEGER REFERENCES product_category(id),
+        creatorId INTEGER REFERENCES users(id),
+        categoryId INTEGER REFERENCES product_category(id),
         name VARCHAR(255) UNIQUE NOT NULL,
         description TEXT NOT NULL,
         price DECIMAL NOT NULL,
@@ -81,24 +79,24 @@ async function createTables() {
     await client.query(`
         CREATE TABLE user_payment (
         id SERIAL PRIMARY KEY,
-        user_id INTEGER REFERENCES users(id),
-        payment_type VARCHAR(255) NOT NULL,
+        userId INTEGER REFERENCES users(id),
+        paymentType VARCHAR(255) NOT NULL,
         provider VARCHAR(255) NOT NULL,
-        account_no INTEGER NOT NULL,
+        accountNo INTEGER NOT NULL,
         expire DATE NOT NULL
       );
     `);
     await client.query(`
         CREATE TABLE cart (
         id SERIAL PRIMARY KEY,
-        user_id INTEGER UNIQUE REFERENCES users(id)
+        userId INTEGER UNIQUE REFERENCES users(id)
     );
   `);
     await client.query(`
         CREATE TABLE cart_items (
         id SERIAL PRIMARY KEY,
-        cart_id INTEGER REFERENCES cart(id),
-        product_id INTEGER REFERENCES products(id),
+        cartId INTEGER REFERENCES cart(id),
+        productId INTEGER REFERENCES products(id),
         quantity INTEGER NOT NULL
   );
 `);
@@ -106,15 +104,15 @@ async function createTables() {
     await client.query(`
         CREATE TABLE orders (
         id SERIAL PRIMARY KEY,
-        user_id INTEGER REFERENCES users(id),
+        userId INTEGER REFERENCES users(id),
         total DECIMAL NOT NULL,
-        created_at TIMESTAMP NOT NULL
+        createdAt TIMESTAMP NOT NULL
 );
 `);
     await client.query(`
         CREATE TABLE order_payment (
         id SERIAL PRIMARY KEY,
-        order_id INTEGER UNIQUE REFERENCES orders(id),
+        orderId INTEGER UNIQUE REFERENCES orders(id),
         provider VARCHAR(255) NOT NULL,
         status VARCHAR(255) NOT NULL
 );
@@ -122,37 +120,176 @@ async function createTables() {
     await client.query(`
         CREATE TABLE order_items (
         id SERIAL PRIMARY KEY,
-        order_id INTEGER UNIQUE REFERENCES orders(id),
-        product_id INTEGER REFERENCES products(id),
+        orderId INTEGER REFERENCES orders(id),
+        productId INTEGER REFERENCES products(id),
         quantity INTEGER NOT NULL
 );
 `);
     await client.query(`
         CREATE TABLE discounts (
         id SERIAL PRIMARY KEY,
-        product_id INTEGER UNIQUE REFERENCES products(id),
+        productId INTEGER UNIQUE REFERENCES products(id),
         name VARCHAR(255) NOT NULL,
         description TEXT NOT NULL,
-        discount_percent DECIMAL NOT NULL,
+        discountPercent DECIMAL NOT NULL,
         active BOOLEAN DEFAULT TRUE,
-        created_at TIMESTAMP,
-        modified_at TIMESTAMP,
-        deleted_at TIMESTAMP
+        createdAt TIMESTAMP,
+        modifiedAt TIMESTAMP,
+        deletedAt TIMESTAMP
 );
 `);
 
     console.log("Finished building tables!");
-    await client.release();
   } catch (error) {
     console.error("Error building tables!");
     throw error;
   }
 }
 
-async function createInitialUsers() {}
-async function createCategories() {}
-async function createInitialProducts() {}
+async function createInitialUsers() {
+  console.log("Starting to create users...");
+  try {
+    const usersToCreate = [
+      {
+        firstName: "Brent",
+        lastName: "Purks",
+        username: "bPurks",
+        password: "testPass",
+        addressLineOne: "1000 Main St.",
+        addressLineTwo: "",
+        city: "Dallas",
+        state: "Texas",
+        country: "US",
+        postalCode: "75071",
+        email: "testing@test1.com",
+      },
+      {
+        firstName: "John",
+        lastName: "Jones",
+        username: "jJones",
+        password: "testPass2",
+        addressLineOne: "2222 Main St.",
+        addressLineTwo: "",
+        city: "Atlanta",
+        state: "Georgia",
+        country: "US",
+        postalCode: "30040",
+        email: "testing@test2.com",
+      },
+      {
+        firstName: "Jake",
+        lastName: "Harrison",
+        username: "tHarrison",
+        password: "testPass3",
+        addressLineOne: "3333 Main St.",
+        addressLineTwo: "",
+        city: "Mckinney",
+        state: "Texas",
+        country: "US",
+        postalCode: "75071",
+        email: "testing@test3.com",
+      },
+    ];
+    
+    const users = await Promise.all(usersToCreate.map(createUser));
+    console.log("Users created:");
+    console.log(users);
+    console.log("Finished creating users!");
+  } catch (error) {
+    console.error("Error creating users!");
+    throw error;
+  }
+}
+async function createInitialCategories() {
+  console.log("Starting to create categories...");
+  const categoriesToCreate = [
+    {name:"electronics"},
+    {name:"clothing"},
+    {name:"jewelry"},
+    {name:"music"},
+    {name:"auto"},
+    {name:"gaming"},
+    {name:"pets"},
+    {name:"sports/lifestyle"},
+    {name:"tools/appliances"},
+    {name:"books"},
+  ];
+  try{
+
+
+    const categories = await Promise.all(categoriesToCreate.map(createCategories))
+    console.log(categories)
+    console.log("Finished creating categories!");
+  }catch (error) {
+  console.error("Error creating categories!");
+  throw error;
+}
+  
+
+}
+
+async function createInitialProducts() {
+  console.log("Starting to create products...");
+  const productsToCreate = [
+    {creatorId:1, categorYId:1, name:"testProduct1", description:"initial product",price:10.00,quantity:300,img:""},
+    {name:"clothing"},
+    {name:"jewelry"},
+    {name:"music"},
+    {name:"auto"},
+    {name:"gaming"},
+    {name:"pets"},
+    {name:"sports/lifestyle"},
+    {name:"tools/appliances"},
+    {name:"books"},
+  ];
+  try{
+
+    // CREATE TABLE products (
+    //   id SERIAL PRIMARY KEY,
+    //   creatorId INTEGER REFERENCES users(id),
+    //   categoryId INTEGER REFERENCES product_category(id),
+    //   name VARCHAR(255) UNIQUE NOT NULL,
+    //   description TEXT NOT NULL,
+    //   price DECIMAL NOT NULL,
+    //   quantity INTEGER NOT NULL,
+    //   img BYTEA NOT NULL,
+    //   active BOOLEAN DEFAULT TRUE
+    //   );
+    const products = await Promise.all(productsToCreate.map(createProduct))
+    console.log(products)
+    console.log("Finished creating products!");
+  }catch (error) {
+  console.error("Error creating products!");
+  throw error;
+}
+}
+
+
+
 async function createInitialDiscounts() {}
 async function createInitialCarts() {}
 async function createInitialPayments() {}
 async function createInitialOrderHistory() {}
+
+async function rebuildDB() {
+  try {
+    await dropTables();
+    await createTables();
+    await createInitialUsers();
+    await createInitialCategories();
+    await createInitialProducts();
+    await createInitialDiscounts();
+    await createInitialCarts();
+    await createInitialPayments();
+    await createInitialOrderHistory();
+  } catch (error) {
+    console.log("Error during rebuildDB");
+    throw error;
+  }
+}
+
+module.exports = {
+  rebuildDB,
+  dropTables,
+  createTables,
+};
