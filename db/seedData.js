@@ -1,7 +1,7 @@
 const client = require("./client");
 const { createUsers } = require("./");
 
-const {createCategories} = require('/')
+const {createCategories} = require('./')
 
 async function dropTables() {
   console.log("Dropping All Tables...");
@@ -9,7 +9,6 @@ async function dropTables() {
   try {
     console.log("Starting to drop tables...");
 
-    const client = await pool.connect();
 
     await client.query(`
       DROP TABLE IF EXISTS discounts;
@@ -25,7 +24,6 @@ async function dropTables() {
         `);
 
     console.log("Finished dropping tables!");
-    await client.release();
   } catch (error) {
     console.error("Error dropping tables!");
     throw error;
@@ -37,7 +35,6 @@ async function createTables() {
   // create all tables, in the correct order
   try {
     console.log("Starting to build tables...");
-    const client = await pool.connect();
     await client.query(`
         CREATE TABLE product_category (
         id SERIAL PRIMARY KEY,
@@ -143,7 +140,6 @@ async function createTables() {
 `);
 
     console.log("Finished building tables!");
-    await client.release();
   } catch (error) {
     console.error("Error building tables!");
     throw error;

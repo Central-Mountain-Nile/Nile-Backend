@@ -17,7 +17,6 @@ async function createCart(userId) {
     throw e;
   }
 }
-
 async function getCart(userId) {
   try {
     const {
