@@ -47,19 +47,19 @@ async function createTables() {
     await client.query(`
         CREATE TABLE users (
         id SERIAL PRIMARY KEY,
-        first_name VARCHAR(255) NOT NULL,
-        last_name VARCHAR(255) NOT NULL,
+        firstName VARCHAR(255) NOT NULL,
+        lastName VARCHAR(255) NOT NULL,
         username varchar(255) UNIQUE NOT NULL,
         password varchar(255) NOT NULL,
-        is_active boolean DEFAULT TRUE,
-        is_admin boolean DEFAULT FALSE,
+        isActive boolean DEFAULT TRUE,
+        isAdmin boolean DEFAULT FALSE,
         email VARCHAR(255) UNIQUE NOT NULL,
-        address_line_one VARCHAR(255) NOT NULL,
-        address_line_two VARCHAR(255),
+        addressLine1 VARCHAR(255) NOT NULL,
+        addressLine2 VARCHAR(255),
         city VARCHAR(255) NOT NULL,
         state VARCHAR(255),
         country VARCHAR(255) NOT NULL,
-        postal_code INTEGER NOT NULL,
+        postalCode INTEGER NOT NULL,
         created_at TIMESTAMP NOT NULL
           );
         `);
@@ -67,8 +67,8 @@ async function createTables() {
     await client.query(`
         CREATE TABLE products (
         id SERIAL PRIMARY KEY,
-        creator_id INTEGER REFERENCES users(id),
-        category_id INTEGER REFERENCES product_category(id),
+        creatorId INTEGER REFERENCES users(id),
+        categoryId INTEGER REFERENCES product_category(id),
         name VARCHAR(255) UNIQUE NOT NULL,
         description TEXT NOT NULL,
         price DECIMAL NOT NULL,
@@ -81,24 +81,24 @@ async function createTables() {
     await client.query(`
         CREATE TABLE user_payment (
         id SERIAL PRIMARY KEY,
-        user_id INTEGER REFERENCES users(id),
-        payment_type VARCHAR(255) NOT NULL,
+        userId INTEGER REFERENCES users(id),
+        paymentType VARCHAR(255) NOT NULL,
         provider VARCHAR(255) NOT NULL,
-        account_no INTEGER NOT NULL,
+        accountNo INTEGER NOT NULL,
         expire DATE NOT NULL
       );
     `);
     await client.query(`
         CREATE TABLE cart (
         id SERIAL PRIMARY KEY,
-        user_id INTEGER UNIQUE REFERENCES users(id)
+        userId INTEGER REFERENCES users(id)
     );
   `);
     await client.query(`
         CREATE TABLE cart_items (
         id SERIAL PRIMARY KEY,
-        cart_id INTEGER REFERENCES cart(id),
-        product_id INTEGER REFERENCES products(id),
+        cartId INTEGER REFERENCES cart(id),
+        productId INTEGER REFERENCES products(id),
         quantity INTEGER NOT NULL
   );
 `);
@@ -106,15 +106,15 @@ async function createTables() {
     await client.query(`
         CREATE TABLE orders (
         id SERIAL PRIMARY KEY,
-        user_id INTEGER REFERENCES users(id),
+        userId INTEGER REFERENCES users(id),
         total DECIMAL NOT NULL,
-        created_at TIMESTAMP NOT NULL
+        createdAt TIMESTAMP NOT NULL
 );
 `);
     await client.query(`
         CREATE TABLE order_payment (
         id SERIAL PRIMARY KEY,
-        order_id INTEGER UNIQUE REFERENCES orders(id),
+        orderId INTEGER UNIQUE REFERENCES orders(id),
         provider VARCHAR(255) NOT NULL,
         status VARCHAR(255) NOT NULL
 );
@@ -122,22 +122,22 @@ async function createTables() {
     await client.query(`
         CREATE TABLE order_items (
         id SERIAL PRIMARY KEY,
-        order_id INTEGER UNIQUE REFERENCES orders(id),
-        product_id INTEGER REFERENCES products(id),
+        orderId INTEGER UNIQUE REFERENCES orders(id),
+        productId INTEGER REFERENCES products(id),
         quantity INTEGER NOT NULL
 );
 `);
     await client.query(`
         CREATE TABLE discounts (
         id SERIAL PRIMARY KEY,
-        product_id INTEGER UNIQUE REFERENCES products(id),
+        productId INTEGER UNIQUE REFERENCES products(id),
         name VARCHAR(255) NOT NULL,
         description TEXT NOT NULL,
-        discount_percent DECIMAL NOT NULL,
+        discountPercent DECIMAL NOT NULL,
         active BOOLEAN DEFAULT TRUE,
-        created_at TIMESTAMP,
-        modified_at TIMESTAMP,
-        deleted_at TIMESTAMP
+        createdAt TIMESTAMP,
+        modifiedAt TIMESTAMP,
+        deletedAt TIMESTAMP
 );
 `);
 
