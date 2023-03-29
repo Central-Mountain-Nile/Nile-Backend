@@ -91,9 +91,27 @@ async function patchPayment({ id, ...fields }) {
     throw error;
   }
 }
+async function deletePayment(id) {
+  try {
+    const { rows } = await client.query(
+      `
+          DELETE FROM user_payment
+          WHERE id = $1
+          RETURNING *;
+          `,
+      [id]
+    );
+
+    return rows;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 module.exports = {
   createPayment,
   getPaymentByUser,
   patchPayment,
   getPaymentById,
+  deletePayment,
 };
