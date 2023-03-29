@@ -132,7 +132,8 @@ async function deleteUsers(usersId) {
   try {
     const { rows } = await client.query(
       `
-      DELETE FROM users
+      UPDATE users
+      SET boolean isActive = false
       WHERE id = $1
       RETURNING *;
       `,
