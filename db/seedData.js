@@ -1,13 +1,11 @@
 const client = require("./client");
 const { createUser } = require("./users");
-
-
+const {createCategories} = require("./productCategory")
 async function dropTables() {
   console.log("Dropping All Tables...");
   // drop all tables, in the correct order
   try {
     console.log("Starting to drop tables...");
-
 
     await client.query(`
       DROP TABLE IF EXISTS discounts;
@@ -193,13 +191,41 @@ async function createInitialUsers() {
     console.log("Users created:");
     console.log(users);
     console.log("Finished creating users!");
-
   } catch (error) {
     console.error("Error creating users!");
     throw error;
   }
 }
-async function createInitialCategories() {}
+async function createInitialCategories() {
+  console.log("Starting to create categories...");
+  const categoriesToCreate = [
+    {name:"electronics"},
+    {name:"clothing"},
+    {name:"jewelry"},
+    {name:"music"},
+    {name:"auto"},
+    {name:"gaming"},
+    {name:"pets"},
+    {name:"sports/lifestyle"},
+    {name:"tools/appliances"},
+    {name:"books"},
+  ];
+  try{
+
+
+    const categories = await Promise.all(categoriesToCreate.map(createCategories))
+    console.log(categories)
+    console.log("Finished creating categories!");
+  }catch (error) {
+  console.error("Error creating categories!");
+  throw error;
+}
+  
+
+}
+
+
+
 async function createInitialProducts() {}
 async function createInitialDiscounts() {}
 async function createInitialCarts() {}
