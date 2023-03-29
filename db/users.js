@@ -2,19 +2,19 @@ const client = require("./client");
 // const bcrypt = require("bcrypt");
 
 async function createUser({
+  first_name,
+  last_name,
   username,
   password,
-  firstName,
-  lastName,
-  isActive,
-  isAdmin,
-  addressLine1,
-  addressLine2,
+  is_active,
+  is_admin,
+  address_line_one,
+  address_line_two,
   city,
   state,
   country,
-  postalCode,
-  CreatedAt,
+  postal_code,
+  created_at,
 }) {
   //   const SALT_COUNT = 10;
   //   const hashpassword = await bcrypt.hash(password, SALT_COUNT);
@@ -25,37 +25,37 @@ async function createUser({
     } = await client.query(
       `
         INSERT INTO users(  
+          first_name,
+          last_name,
           username,
           password,
-          firstName,
-          lastName,
-          isActive,
-          isAdmin,
-          addressLine1,
-          addressLine2,
+          is_active,
+          is_admin,
+          address_line_one,
+          address_line_two,
           city,
           state,
           country,
-          postalCode,
-          CreatedAt)
+          postal_code,
+          created_at)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
         ON CONFLICT (username) DO NOTHING
         RETURNING *;
         `,
       [
+        first_name,
+        last_name,
         username,
         password,
-        firstName,
-        lastName,
-        isActive,
-        isAdmin,
-        addressLine1,
-        addressLine2,
+        is_active,
+        is_admin,
+        address_line_one,
+        address_line_two,
         city,
         state,
         country,
-        postalCode,
-        CreatedAt,
+        postal_code,
+        created_at,
       ]
     );
     delete users.password;
