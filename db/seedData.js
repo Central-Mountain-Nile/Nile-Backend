@@ -60,7 +60,7 @@ async function createTables() {
         state VARCHAR(255),
         country VARCHAR(255) NOT NULL,
         postalCode INTEGER NOT NULL,
-        created_at TIMESTAMP NOT NULL
+        createdAt TIMESTAMP NOT NULL
           );
         `);
 
@@ -91,7 +91,7 @@ async function createTables() {
     await client.query(`
         CREATE TABLE cart (
         id SERIAL PRIMARY KEY,
-        userId INTEGER REFERENCES users(id)
+        userId INTEGER UNIQUE REFERENCES users(id)
     );
   `);
     await client.query(`

@@ -33,6 +33,7 @@ async function createUser({
           isAdmin,
           addressLine1,
           addressLine2,
+          email
           city,
           state,
           country,

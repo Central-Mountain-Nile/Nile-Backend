@@ -6,12 +6,11 @@ async function createCart(userId) {
       rows: [cart],
     } = await client.query(
       `
-          INSERT INTO cart(user_id)
-          VALUES($1)
-          ON CONFLICT (user_id) DO NOTHING
+          INSERT INTO cart(userId)
+          VALUES(${userId})
+          ON CONFLICT (userId) DO NOTHING
           RETURNING *; 
-          `,
-      [userId]
+          `
     );
     return cart;
   } catch (e) {
@@ -25,7 +24,7 @@ async function getCart(userId) {
     } = await client.query(
       `
           SELECT * FROM cart
-          WHERE user_id=${userId};
+          WHERE userId=${userId};
           `,
       [userId]
     );
@@ -41,7 +40,7 @@ async function addToCart({ productId, cartId, quantity }) {
       rows: [cart],
     } = await client.query(
       `
-      INSERT INTO cart_items(cart_id, product_id, quantity)
+      INSERT INTO cart_items(cartId, productId, quantity)
       VALUES($1,$2,$3)
       RETURNING *;
       `,
@@ -56,7 +55,7 @@ async function clearCart(cartId) {
   try {
     const { rows } = await client.query(`
           DELETE FROM cart_items
-          WHERE cart_id=${cartId}
+          WHERE cartId=${cartId}
           RETURNING *;
           `);
     return rows;
