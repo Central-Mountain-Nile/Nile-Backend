@@ -1,4 +1,5 @@
 const client = require("./client");
+const { createUsers } = require("./");
 
 const {createCategories} = require('/')
 
@@ -54,8 +55,8 @@ async function createTables() {
         isActive boolean DEFAULT TRUE,
         isAdmin boolean DEFAULT FALSE,
         email VARCHAR(255) UNIQUE NOT NULL,
-        addressLine1 VARCHAR(255) NOT NULL,
-        addressLine2 VARCHAR(255),
+        addressLineOne VARCHAR(255) NOT NULL,
+        addressLineTwo VARCHAR(255),
         city VARCHAR(255) NOT NULL,
         state VARCHAR(255),
         country VARCHAR(255) NOT NULL,
@@ -149,37 +150,90 @@ async function createTables() {
   }
 }
 
-
-async function createCategories() {
-  console.log("Pulling categories...")
+async function createInitialUsers() {
+  console.log("Starting to create users...");
   try {
-    const categoriesToCreate = [
-      {Appliances},
-      {Auto},
-      {Books},
-      {Clothing},
-      {Electronics},
-      {Gaming},
-      {Jewelry},
-      {Lifestyle},
-      {Music},
-      {Pets},
-      {Sports},
-      {Tools}
+    const usersToCreate = [
+      {
+        firstName: "Brent",
+        lastName: "Purks",
+        username: "bPurks",
+        password: "testPass",
+        addressLineOne: "1000 Main St.",
+        addressLineTwo: "",
+        city: "Dallas",
+        state: "Texas",
+        country: "US",
+        postalCode: "75071",
+        createdAt: "12:00",
+        email: "testing@test.com",
+      },
+      {
+        firstName: "John",
+        lastName: "Jones",
+        username: "jJones",
+        password: "testPass2",
+        addressLineOne: "2222 Main St.",
+        addressLineTwo: "",
+        city: "Atlanta",
+        state: "Georgia",
+        country: "US",
+        postalCode: "30040",
+        createdAt: "12:00",
+        email: "testing@test.com",
+      },
+      {
+        firstName: "Jake",
+        lastName: "Harrison",
+        username: "tHarrison",
+        password: "testPass3",
+        addressLineOne: "3333 Main St.",
+        addressLineTwo: "",
+        city: "Mckinney",
+        state: "Texas",
+        country: "US",
+        postalCode: "75071",
+        createdAt: "12:00",
+        email: "testing@test.com",
+      },
+    ];
+    const users = await Promise.all(usersToCreate.map(createUsers));
 
-    ]
-    const categories = await Promise.all(categoriesToCreate.map(createCategories))
-    console.log(categories)
+    console.log("Users created:");
+    console.log(users);
+    console.log("Finished creating users!");
 
   } catch (error) {
-    console.log("Error creating categories")
+    console.error("Error creating users!");
+    throw error;
   }
 }
-
-async function createInitialUsers() {}
 async function createCategories() {}
 async function createInitialProducts() {}
 async function createInitialDiscounts() {}
 async function createInitialCarts() {}
 async function createInitialPayments() {}
 async function createInitialOrderHistory() {}
+
+async function rebuildDB() {
+  try {
+    await dropTables();
+    await createTables();
+    await createInitialUsers();
+    await createCategories();
+    await createInitialProducts();
+    await createInitialDiscounts();
+    await createInitialCarts();
+    await createInitialPayments();
+    await createInitialOrderHistory();
+  } catch (error) {
+    console.log("Error during rebuildDB");
+    throw error;
+  }
+}
+
+module.exports = {
+  rebuildDB,
+  dropTables,
+  createTables,
+};
