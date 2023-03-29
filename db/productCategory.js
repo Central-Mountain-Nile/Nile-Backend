@@ -1,5 +1,6 @@
 const client = require("./client");
 
+
 async function createCategories({ name }) {
   try {
     const {
@@ -36,4 +37,5 @@ async function getAllCategories() {
 module.exports = {
   createCategories,
   getAllCategories,
+
 };
