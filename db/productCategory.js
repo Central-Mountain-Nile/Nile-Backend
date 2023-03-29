@@ -11,8 +11,8 @@ async function createCategories ({id}) {
                VALUES($1),
                ON CONFLICT (category) DO NOTHING,
                RETURNING *;
-                ` , [id]
-            );
+                ` , [id]);
+            return product_category;
         } catch (error) {
             throw error;
         }
