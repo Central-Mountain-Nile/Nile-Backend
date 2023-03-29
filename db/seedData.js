@@ -122,7 +122,7 @@ async function createTables() {
     await client.query(`
         CREATE TABLE order_items (
         id SERIAL PRIMARY KEY,
-        orderId INTEGER UNIQUE REFERENCES orders(id),
+        orderId INTEGER REFERENCES orders(id),
         productId INTEGER REFERENCES products(id),
         quantity INTEGER NOT NULL
 );
@@ -160,9 +160,9 @@ async function createCategories() {
       {Clothing},
       {Electronics},
       {Gaming},
-      {Jewlery},
+      {Jewelry},
       {Lifestyle},
-      {Muic},
+      {Music},
       {Pets},
       {Sports},
       {Tools}

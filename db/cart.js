@@ -17,14 +17,17 @@ async function createCart(userId) {
     throw e;
   }
 }
+
 async function getCart(userId) {
   try {
     const {
       rows: [cart],
     } = await client.query(
       `
-          SELECT * FROM cart
-          WHERE userId=${userId};
+      SELECT cart.*, cart_items.*
+      FROM cart
+      JOIN ON cart.id=cart_items.cartId
+      WHERE userId=${userId};
           `,
       [userId]
     );
@@ -51,6 +54,7 @@ async function addToCart({ productId, cartId, quantity }) {
     throw e;
   }
 }
+
 async function clearCart(cartId) {
   try {
     const { rows } = await client.query(`
