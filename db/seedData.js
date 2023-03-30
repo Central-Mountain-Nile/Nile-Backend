@@ -20,6 +20,7 @@ function makeid(length) {
 let users = null;
 let categories = null;
 let products = null;
+
 async function dropTables() {
   console.log("Dropping All Tables...");
   // drop all tables, in the correct order
@@ -87,7 +88,8 @@ async function createTables() {
         description TEXT NOT NULL,
         price DECIMAL NOT NULL,
         quantity INTEGER NOT NULL,
-        active BOOLEAN DEFAULT TRUE
+        active BOOLEAN DEFAULT TRUE,
+        imgURL TEXT
         );
       `);
 
@@ -160,6 +162,7 @@ async function createTables() {
     throw error;
   }
 }
+
 
 async function createInitialUsers() {
   console.log("Starting to create users...");
@@ -255,25 +258,25 @@ async function createInitialProducts() {
 async function createInitialDiscounts() {}
 async function createInitialCarts() {
   console.log("Starting to fill carts...");
-  try{
-    for(let i = 0; i < users.length;i++){//for every user
-      for(let j = 0; j< 5;j++){//add this many items to their cart
+  try {
+    for (let i = 0; i < users.length; i++) {
+      //for every user
+      for (let j = 0; j < 5; j++) {
+        //add this many items to their cart
         const productId = Math.floor(Math.random() * (products.length - 1)) + 1;
         const quantity = Math.floor(Math.random() * 100) + 1;
-        const cartId = users[i].cart.id
-          await addToCart({productId,cartId,quantity})
+        const cartId = users[i].cart.id;
+        await addToCart({ productId, cartId, quantity });
       }
     }
-    for(let i = 0; i < users.length; i++){
-      console.log(await getCart(users[i].id))
+    for (let i = 0; i < users.length; i++) {
+      console.log(await getCart(users[i].id));
     }
     console.log("Finished filling carts!");
-  }catch(e){
+  } catch (e) {
     console.error("Error filling carts!");
-    throw e
+    throw e;
   }
-
-
 }
 async function createInitialPayments() {}
 async function createInitialOrderHistory() {}

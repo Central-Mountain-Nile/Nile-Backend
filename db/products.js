@@ -6,7 +6,7 @@ async function createProduct({
   description,
   price,
   quantity,
-
+  imgURL
 }) {
   try {
     const {
@@ -19,14 +19,15 @@ async function createProduct({
                 name,
                 description,
                 price,
-                quantity
+                quantity,
+                imgURL
 
             )
             VALUES($1, $2, $3, $4, $5, $6)
             ON CONFLICT (name) DO NOTHING
             RETURNING *;
         `,
-      [creatorId, categoryId, name, description, price, quantity]
+      [creatorId, categoryId, name, description, price, quantity,imgURL]
     );
     return products;
   } catch (error) {
