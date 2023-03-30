@@ -2,12 +2,13 @@ const client = require("./client");
 
 async function createOrder({ userId, total }) {
   try {
+
     const {
       rows: [order],
     } = await client.query(
       `
-          INSERT INTO order(userId, total)
-          VALUES(${userId},${total})
+          INSERT INTO orders(userId, total,createdAt)
+          VALUES(${userId},${total},to_timestamp(${Date.now()} / 1000.0) )
           RETURNING *; 
           `
     );
@@ -65,4 +66,12 @@ async function getOrdersByUser(userId) {
   } catch (e) {
     throw e;
   }
+}
+
+
+module.exports = {
+  createOrder,
+  getAllOrders,
+  getOrder,
+  getOrdersByUser
 }

@@ -50,7 +50,7 @@ async function getDiscountsByProduct({ productId }) {
       `
         SELECT *
         FROM discounts
-        WHERE discounts.productId = $1
+        WHERE productId = $1;
         `,
       [productId]
     );
