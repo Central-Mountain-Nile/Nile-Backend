@@ -4,7 +4,8 @@ const { createCategories } = require("./productCategory");
 const { createProduct } = require("./products");
 const { addToCart, getCart } = require("./cart");
 const { createPayment } = require("./users_payments");
-const { createDiscount } = require("./discounts");
+const { createDiscount, getDiscountsByProduct } = require("./discounts");
+const { createOrder } = require("./order");
 
 function makeid(length) {
   let result = "";
@@ -169,7 +170,7 @@ async function createInitialUsers() {
   console.log("Starting to create users...");
   try {
     let usersToCreate = [];
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 10; i++) {
       const firstName = makeid(10);
       const lastName = makeid(10);
       const username = makeid(9);
@@ -229,7 +230,7 @@ async function createInitialCategories() {
 async function createInitialProducts() {
   console.log("Starting to create products...");
   let productsToCreate = [];
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 10; i++) {
     const creatorId = Math.floor(Math.random() * (users.length - 1)) + 1;
     const categoryId = Math.floor(Math.random() * (categories.length - 1)) + 1;
     const name = "testProduct" + i;
@@ -317,11 +318,15 @@ async function createInitialPayments() {
         const userId = users[i].id;
         const paymentType = makeid(5);
         const provider = makeid(8);
-        const accountNo = Math.floor(Math.random() * 1000) + 1
-        const expire = '03-30-2023'
+        const accountNo = Math.floor(Math.random() * 1000) + 1;
+        const expire = "03-30-2023";
         paymentsToCreate.push({
-          userId, paymentType, provider, accountNo, expire
-        })
+          userId,
+          paymentType,
+          provider,
+          accountNo,
+          expire,
+        });
       }
     }
     for (let i = 0; i < users.length; i++) {
@@ -333,7 +338,27 @@ async function createInitialPayments() {
     throw e;
   }
 }
-async function createInitialOrderHistory() {} //userpayment, order, orderitems
+async function createInitialOrderHistory() {
+  for (let i = 0; i < users.length; i++) {
+    if (Math.random() > 0.5) {
+      myCart = await getCart(users[i].id);
+      console.log(myCart);
+      let total = 0;
+      for (let j = 0; j < myCart.length; j++) {
+        mypId = myCart[j].productid;
+        myDiscount = await getDiscountsByProduct({ productId: mypId });
+        price = myCart[j].price;
+        myDiscountNumber = myDiscount[0].discountpercent;
+        total = total + (myDiscountNumber / 100) * price;
+      }
+      total = total * 100;
+      total = Math.floor(total);
+      total = total / 100;
+      const order = await createOrder({ userId: users[i].id, total });
+      console.log(order);
+    }
+  }
+} //userpayment, order, orderitems
 
 async function rebuildDB() {
   try {
