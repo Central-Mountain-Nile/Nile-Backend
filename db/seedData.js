@@ -163,7 +163,6 @@ async function createTables() {
   }
 }
 
-
 async function createInitialUsers() {
   console.log("Starting to create users...");
   try {
@@ -235,7 +234,7 @@ async function createInitialProducts() {
     const description = "initial product " + i;
     const price = Math.floor(Math.random() * 100000) / 100;
     const quantity = Math.floor(Math.random() * 500 + 1);
-    const imgURL = 'insert default url'
+    const imgURL = "insert default url";
     productsToCreate.push({
       creatorId,
       categoryId,
@@ -243,7 +242,7 @@ async function createInitialProducts() {
       description,
       price,
       quantity,
-      imgURL
+      imgURL,
     });
   }
 
@@ -257,7 +256,32 @@ async function createInitialProducts() {
   }
 }
 
-async function createInitialDiscounts() {}
+async function createInitialDiscounts() {
+  console.log("starting creating discounts");
+  try {
+    for (let i = 0; i < products.length; i++) {
+      const productId = i;
+      const name = "testDiscount" + i;
+      const description = "initial discount " + i;
+      const discountPercent = Math.floor(Math.random() * 100) + 1;
+      const active = true;
+      const discount = await createDiscount({
+        productId,
+        name,
+        description,
+        discountPercent,
+        active,
+      });
+      console.log(discount);
+    }
+
+    console.log("finishing creating discounts");
+  } catch (error) {
+    console.error("error creating discounts");
+    throw error;
+  }
+}
+
 async function createInitialCarts() {
   console.log("Starting to fill carts...");
   try {
