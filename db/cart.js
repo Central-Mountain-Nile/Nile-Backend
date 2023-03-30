@@ -6,7 +6,7 @@ async function createCart(userId) {
       rows: [cart],
     } = await client.query(
       `
-          INSERT INTO cart("userId")
+          INSERT INTO carts("userId")
           VALUES(${userId})
           ON CONFLICT ("userId") DO NOTHING
           RETURNING *; 
@@ -17,16 +17,31 @@ async function createCart(userId) {
     throw e;
   }
 }
-async function getCart(userId) {
+
+
+async function getCart(userId){
+  try{
+    const {
+      rows:[cart]
+    } = await client.query(`
+    SELECT * FROM carts
+    WHERE "userId"=${userId};    
+    `)
+    return cart
+  }catch(e){
+    throw e
+  }
+}
+async function getCartItems(userId) {
   try {
     const {
       rows,
     } = await client.query(
       `
-      SELECT cart.*, cart_items.*, products.quantity, products.price, products.active
-      FROM cart
+      SELECT carts.*, cart_items.*, products.quantity, products.price, products.active
+      FROM carts
       JOIN cart_items 
-      ON cart.id=cart_items."cartId"
+      ON carts.id=cart_items."cartId"
       JOIN products 
       ON cart_items."productId" = products.id
       WHERE "userId"=${userId};
@@ -57,6 +72,7 @@ async function addToCart({ productId, cartId, quantity }) {
 }
 
 async function clearCart(cartId) {
+
   try {
     const { rows } = await client.query(`
           DELETE FROM cart_items
@@ -72,4 +88,5 @@ module.exports = {
   getCart,
   addToCart,
   clearCart,
+  getCartItems
 };
