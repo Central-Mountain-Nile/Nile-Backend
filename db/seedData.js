@@ -3,6 +3,7 @@ const { createUser } = require("./users");
 const { createCategories } = require("./productCategory");
 const { createProduct } = require("./products");
 const { addToCart, getCart } = require("./cart");
+const { createPayment } = require("./users_payments");
 
 function makeid(length) {
   let result = "";
@@ -289,10 +290,15 @@ async function createInitialPayments() {
         const userId = i;
         const paymentType = makeid(5);
         const provider = makeid(8);
+        const accountNo = Math.floor(Math.random() * 1000) + 1
+        const expire = '03-30-2023'
+        paymentsToCreate.push({
+          userId, paymentType, provider, accountNo, expire
+        })
       }
     }
     for (let i = 0; i < users.length; i++) {
-      console.log(await getCart(users[i].id));
+      console.log(await createPayment(users[i].id));
     }
     console.log("Finished filling carts!");
   } catch (e) {
