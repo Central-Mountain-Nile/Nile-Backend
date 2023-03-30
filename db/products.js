@@ -14,13 +14,13 @@ async function createProduct({
     } = await client.query(
       `
             INSERT INTO products(
-                creatorId,
-                categoryId,
+                "creatorId",
+                "categoryId",
                 name,
                 description,
                 price,
                 quantity,
-                imgURL
+               "imgURL"
 
             )
             VALUES($1, $2, $3, $4, $5, $6,$7)
@@ -58,7 +58,7 @@ async function getProductsByCategory(categoryId) {
       `
         SELECT *
         FROM products
-        WHERE categoryId = $1;
+        WHERE "categoryId" = $1;
         `,
       [categoryId]
     );
@@ -115,7 +115,7 @@ async function getProductsByUser(user_id) {
       `
           SELECT *
           FROM products
-          WHERE user_id = $1;
+          WHERE "userId" = $1;
           `,
       [user_id]
     );

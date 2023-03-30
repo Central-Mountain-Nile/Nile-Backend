@@ -11,12 +11,12 @@ async function createDiscount({
     const { rows } = await client.query(
       `
             INSERT INTO discounts(
-                productId,
+                "productId",
                 name,
                 description,
-                discountPercent,
+                "discountPercent",
                 active,
-                createdAt)
+                "createdAt")
             VALUES($1, $2, $3, $4, $5, to_timestamp(${Date.now()} / 1000.0))
             RETURNING *;
             `,
@@ -50,7 +50,7 @@ async function getDiscountsByProduct({ productId }) {
       `
         SELECT *
         FROM discounts
-        WHERE productId = $1;
+        WHERE "productId" = $1;
         `,
       [productId]
     );

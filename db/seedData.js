@@ -65,58 +65,58 @@ async function createTables() {
     await client.query(`
         CREATE TABLE users (
         id SERIAL PRIMARY KEY,
-        firstName VARCHAR(255) NOT NULL,
-        lastName VARCHAR(255) NOT NULL,
+        "firstName" VARCHAR(255) NOT NULL,
+        "lastName" VARCHAR(255) NOT NULL,
         username varchar(255) UNIQUE NOT NULL,
         password varchar(255) NOT NULL,
-        isActive boolean DEFAULT TRUE,
-        isAdmin boolean DEFAULT FALSE,
+        "isActive" boolean DEFAULT TRUE,
+        "isAdmin" boolean DEFAULT FALSE,
         email VARCHAR(255) UNIQUE NOT NULL,
-        addressLineOne VARCHAR(255) NOT NULL,
-        addressLineTwo VARCHAR(255),
+        "addressLineOne" VARCHAR(255) NOT NULL,
+        "addressLineTwo" VARCHAR(255),
         city VARCHAR(255) NOT NULL,
         state VARCHAR(255),
         country VARCHAR(255) NOT NULL,
-        postalCode INTEGER NOT NULL,
-        createdAt TIMESTAMP NOT NULL
+        "postalCode" INTEGER NOT NULL,
+        "createdAt" TIMESTAMP NOT NULL
           );
         `);
 
     await client.query(`
         CREATE TABLE products (
         id SERIAL PRIMARY KEY,
-        creatorId INTEGER REFERENCES users(id),
-        categoryId INTEGER REFERENCES product_category(id),
+        "creatorId" INTEGER REFERENCES users(id),
+        "categoryId" INTEGER REFERENCES product_category(id),
         name VARCHAR(255) UNIQUE NOT NULL,
         description TEXT NOT NULL,
         price DECIMAL NOT NULL,
         quantity INTEGER NOT NULL,
         active BOOLEAN DEFAULT TRUE,
-        imgURL TEXT
+        "imgURL" TEXT
         );
       `);
 
     await client.query(`
         CREATE TABLE user_payments (
         id SERIAL PRIMARY KEY,
-        userId INTEGER REFERENCES users(id),
-        paymentType VARCHAR(255) NOT NULL,
+        "userId" INTEGER REFERENCES users(id),
+        "paymentType" VARCHAR(255) NOT NULL,
         provider VARCHAR(255) NOT NULL,
-        accountNo INTEGER NOT NULL,
+        "accountNo" INTEGER NOT NULL,
         expire DATE NOT NULL
       );
     `);
     await client.query(`
         CREATE TABLE cart (
         id SERIAL PRIMARY KEY,
-        userId INTEGER UNIQUE REFERENCES users(id)
+        "userId" INTEGER UNIQUE REFERENCES users(id)
     );
   `);
     await client.query(`
         CREATE TABLE cart_items (
         id SERIAL PRIMARY KEY,
-        cartId INTEGER REFERENCES cart(id),
-        productId INTEGER REFERENCES products(id),
+        "cartId" INTEGER REFERENCES cart(id),
+        "productId" INTEGER REFERENCES products(id),
         quantity INTEGER NOT NULL
   );
 `);
@@ -124,15 +124,15 @@ async function createTables() {
     await client.query(`
         CREATE TABLE orders (
         id SERIAL PRIMARY KEY,
-        userId INTEGER REFERENCES users(id),
+        "userId" INTEGER REFERENCES users(id),
         total DECIMAL NOT NULL,
-        createdAt TIMESTAMP NOT NULL
+        "createdAt" TIMESTAMP NOT NULL
 );
 `);
     await client.query(`
         CREATE TABLE order_payment (
         id SERIAL PRIMARY KEY,
-        orderId INTEGER UNIQUE REFERENCES orders(id),
+        "orderId" INTEGER UNIQUE REFERENCES orders(id),
         provider VARCHAR(255) NOT NULL,
         status VARCHAR(255) NOT NULL
 );
@@ -140,22 +140,22 @@ async function createTables() {
     await client.query(`
         CREATE TABLE order_items (
         id SERIAL PRIMARY KEY,
-        orderId INTEGER REFERENCES orders(id),
-        productId INTEGER REFERENCES products(id),
+        "orderId" INTEGER REFERENCES orders(id),
+        "productId" INTEGER REFERENCES products(id),
         quantity INTEGER NOT NULL
 );
 `);
     await client.query(`
         CREATE TABLE discounts (
         id SERIAL PRIMARY KEY,
-        productId INTEGER UNIQUE REFERENCES products(id),
+        "productId" INTEGER UNIQUE REFERENCES products(id),
         name VARCHAR(255) NOT NULL,
         description TEXT NOT NULL,
-        discountPercent DECIMAL NOT NULL,
+        "discountPercent" DECIMAL NOT NULL,
         active BOOLEAN DEFAULT TRUE,
-        createdAt TIMESTAMP,
-        modifiedAt TIMESTAMP,
-        deletedAt TIMESTAMP
+        "createdAt" TIMESTAMP,
+        "modifiedAt" TIMESTAMP,
+        "deletedAt" TIMESTAMP
 );
 `);
 
@@ -295,9 +295,11 @@ async function createInitialCarts() {
         const productId = Math.floor(Math.random() * (products.length - 1)) + 1;
         const quantity = Math.floor(Math.random() * 100) + 1;
         const cartId = users[i].cart.id;
+
         await addToCart({ productId, cartId, quantity });
       }
     }
+
     for (let i = 0; i < users.length; i++) {
       console.log(await getCart(users[i].id));
     }
@@ -345,10 +347,10 @@ async function createInitialOrderHistory() {
       console.log(myCart);
       let total = 0;
       for (let j = 0; j < myCart.length; j++) {
-        mypId = myCart[j].productid;
+        mypId = myCart[j].productId;
         myDiscount = await getDiscountsByProduct({ productId: mypId });
         price = myCart[j].price;
-        myDiscountNumber = myDiscount[0].discountpercent;
+        myDiscountNumber = myDiscount[0].discountPercent;
         total = total + (myDiscountNumber / 100) * price;
       }
       total = total * 100;

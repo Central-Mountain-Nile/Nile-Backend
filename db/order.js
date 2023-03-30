@@ -7,7 +7,7 @@ async function createOrder({ userId, total }) {
       rows: [order],
     } = await client.query(
       `
-          INSERT INTO orders(userId, total,createdAt)
+          INSERT INTO orders("userId", total,"createdAt")
           VALUES(${userId},${total},to_timestamp(${Date.now()} / 1000.0) )
           RETURNING *; 
           `
@@ -23,8 +23,8 @@ async function getAllOrders() {
       `
               SELECT orders.*, order_items.*, payment_details.*
               FROM orders
-              JOIN order_items ON orders.id=order_items.orderId
-              JOIN payment_details ON orders.id=payment_details.orderId
+              JOIN order_items ON orders.id=order_items."orderId"
+              JOIN payment_details ON orders.id=payment_details."orderId"
               WHERE orders.id=${orderId};
               `
     );
@@ -41,8 +41,8 @@ async function getOrder(orderId) {
       `
               SELECT orders.*, order_items.*, payment_details.*
               FROM orders
-              JOIN order_items ON orders.id=order_items.orderId
-              JOIN payment_details ON orders.id=payment_details.orderId
+              JOIN order_items ON orders.id=order_items."orderId"
+              JOIN payment_details ON orders.id=payment_details."orderId"
               WHERE orders.id=${orderId};
               `
     );
@@ -57,9 +57,9 @@ async function getOrdersByUser(userId) {
       `
               SELECT orders.*, order_items.*, payment_details.*
               FROM orders
-              JOIN order_items ON orders.id=order_items.orderId
-              JOIN payment_details ON orders.id=payment_details.orderId
-              WHERE orders.userId=${userId};
+              JOIN order_items ON orders.id=order_items."orderId"
+              JOIN payment_details ON orders.id=payment_details."orderId"
+              WHERE orders."userId"=${userId};
               `
     );
     return rows;

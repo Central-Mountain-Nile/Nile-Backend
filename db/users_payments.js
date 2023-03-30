@@ -12,7 +12,7 @@ async function createPayment({
       rows: [user],
     } = await client.query(
       `
-        INSERT INTO user_payments(userId, paymentType, provider, accountNo, expire) 
+        INSERT INTO user_payments("userId", "paymentType", provider, "accountNo", expire) 
         VALUES($1, $2, $3, $4, $5) 
         RETURNING *;
       `,
@@ -32,7 +32,7 @@ async function getPaymentByUser(userId) {
       `
         SELECT * 
         FROM user_payments
-        WHERE userId = $1;
+        WHERE "userId" = $1;
         `,
       [userId]
     );
