@@ -1,4 +1,5 @@
 const client = require("./client");
+const { createOrderItems } = require("./orderItems");
 
 async function createOrder({ userId, total }) {
   try {
