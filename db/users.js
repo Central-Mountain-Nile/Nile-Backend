@@ -24,17 +24,17 @@ async function createUser({
     } = await client.query(
       `
         INSERT INTO users(  
-          firstName,
-          lastName,
+          "firstName",
+          "lastName",
           username,
           password,
-          addressLineOne,
-          addressLineTwo,
+          "addressLineOne",
+          "addressLineTwo",
           city,
           state,
           country,
-          postalCode,
-          createdAt,
+          "postalCode",
+          "createdAt",
           email)
   VALUES('${firstName}', '${lastName}', '${username}', '${password}', 
      '${addressLineOne}', '${addressLineTwo}', 
@@ -136,7 +136,7 @@ async function deleteUsers(usersId) {
     const { rows } = await client.query(
       `
       UPDATE users
-      SET boolean isActive = false
+      SET boolean "isActive" = false
       WHERE id = $1
       RETURNING *;
       `,
