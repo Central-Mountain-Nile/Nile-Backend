@@ -163,7 +163,6 @@ async function createTables() {
   }
 }
 
-
 async function createInitialUsers() {
   console.log("Starting to create users...");
   try {
@@ -235,7 +234,7 @@ async function createInitialProducts() {
     const description = "initial product " + i;
     const price = Math.floor(Math.random() * 100000) / 100;
     const quantity = Math.floor(Math.random() * 500 + 1);
-    const imgURL = 'insert default url'
+    const imgURL = "insert default url";
     productsToCreate.push({
       creatorId,
       categoryId,
@@ -243,7 +242,7 @@ async function createInitialProducts() {
       description,
       price,
       quantity,
-      imgURL
+      imgURL,
     });
   }
 
@@ -280,9 +279,28 @@ async function createInitialCarts() {
     throw e;
   }
 }
-
-async function createInitialPayments() {}
-async function createInitialOrderHistory() {}
+//expire, accountNo,
+async function createInitialPayments() {
+  console.log("Initializing Payments...");
+  try {
+    for (let i = 0; i < users.length; i++) {
+      //for every user
+      for (let j = 0; j < 5; j++) {
+        const userId = i;
+        const paymentType = makeid(5);
+        const provider = makeid(8);
+      }
+    }
+    for (let i = 0; i < users.length; i++) {
+      console.log(await getCart(users[i].id));
+    }
+    console.log("Finished filling carts!");
+  } catch (e) {
+    console.error("Error filling carts!");
+    throw e;
+  }
+}
+async function createInitialOrderHistory() {} //userpayment, order, orderitems
 
 async function rebuildDB() {
   try {
