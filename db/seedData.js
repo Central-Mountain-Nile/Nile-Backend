@@ -235,6 +235,7 @@ async function createInitialProducts() {
     const description = "initial product " + i;
     const price = Math.floor(Math.random() * 100000) / 100;
     const quantity = Math.floor(Math.random() * 500 + 1);
+    const imgURL = 'insert default url'
     productsToCreate.push({
       creatorId,
       categoryId,
@@ -242,6 +243,7 @@ async function createInitialProducts() {
       description,
       price,
       quantity,
+      imgURL
     });
   }
 
@@ -278,6 +280,7 @@ async function createInitialCarts() {
     throw e;
   }
 }
+
 async function createInitialPayments() {}
 async function createInitialOrderHistory() {}
 
