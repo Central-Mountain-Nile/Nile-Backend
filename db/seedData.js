@@ -3,7 +3,9 @@ const { createUser } = require("./users");
 const { createCategories } = require("./productCategory");
 const { createProduct } = require("./products");
 const { addToCart, getCart } = require("./cart");
+const { createPayment } = require("./users_payments");
 const { createDiscount } = require("./discounts");
+
 function makeid(length) {
   let result = "";
   const characters =
@@ -303,9 +305,33 @@ async function createInitialCarts() {
     throw e;
   }
 }
-
-async function createInitialPayments() {}
-async function createInitialOrderHistory() {}
+//expire, accountNo,
+async function createInitialPayments() {
+  console.log("Initializing Payments...");
+  try {
+    for (let i = 0; i < users.length; i++) {
+      //for every user
+      for (let j = 0; j < 5; j++) {
+        const userId = i;
+        const paymentType = makeid(5);
+        const provider = makeid(8);
+        const accountNo = Math.floor(Math.random() * 1000) + 1
+        const expire = '03-30-2023'
+        paymentsToCreate.push({
+          userId, paymentType, provider, accountNo, expire
+        })
+      }
+    }
+    for (let i = 0; i < users.length; i++) {
+      console.log(await createPayment(users[i].id));
+    }
+    console.log("Finished filling carts!");
+  } catch (e) {
+    console.error("Error filling carts!");
+    throw e;
+  }
+}
+async function createInitialOrderHistory() {} //userpayment, order, orderitems
 
 async function rebuildDB() {
   try {
