@@ -1,10 +1,10 @@
 const client = require("./client");
 
 async function createDiscount({
-  product_id,
+  productId,
   name,
   description,
-  discount_percent,
+  discountPercent,
   active,
 }) {
   try {
@@ -16,13 +16,13 @@ async function createDiscount({
                 description,
                 discountPercent,
                 active,
-                createdAt,)
-            VALUES($1, $2, $3, $4, $5, to_timestamp(${Date.now()} / 1000.0)),
+                createdAt)
+            VALUES($1, $2, $3, $4, $5, to_timestamp(${Date.now()} / 1000.0))
             ON CONFLICT (name) DO NOTHING,
             RETURNING *;
             `,
 
-      [product_id, name, description, discount_percent, active]
+      [productId, name, description, discountPercent, active]
     );
     return rows;
   } catch (error) {
@@ -53,7 +53,7 @@ async function getDiscountsByProduct({ productId }) {
         FROM discounts
         WHERE discounts.productId = $1
         `,
-      [product_id]
+      [productId]
     );
     return rows;
   } catch (error) {
@@ -80,7 +80,7 @@ async function editDiscounts({ usersId, ...fields }) {
       );
     }
 
-    return await getDiscountsByProduct(product_id);
+    return await getDiscountsByProduct(productId);
   } catch (error) {
     console.log(error);
     throw error;

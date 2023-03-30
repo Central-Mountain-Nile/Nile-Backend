@@ -4,6 +4,7 @@ const { createCategories } = require("./productCategory");
 const { createProduct } = require("./products");
 const { addToCart, getCart } = require("./cart");
 const { createPayment } = require("./users_payments");
+const { createDiscount } = require("./discounts");
 
 function makeid(length) {
   let result = "";
@@ -21,7 +22,6 @@ function makeid(length) {
 let users = null;
 let categories = null;
 let products = null;
-
 async function dropTables() {
   console.log("Dropping All Tables...");
   // drop all tables, in the correct order
@@ -257,7 +257,32 @@ async function createInitialProducts() {
   }
 }
 
-async function createInitialDiscounts() {}
+async function createInitialDiscounts() {
+  console.log("starting creating discounts");
+  try {
+    for (let i = 0; i < products.length; i++) {
+      const productId = i;
+      const name = "testDiscount" + i;
+      const description = "initial discount " + i;
+      const discountPercent = Math.floor(Math.random() * 100) + 1;
+      const active = true;
+      const discount = await createDiscount({
+        productId,
+        name,
+        description,
+        discountPercent,
+        active,
+      });
+      console.log(discount);
+    }
+
+    console.log("finishing creating discounts");
+  } catch (error) {
+    console.error("error creating discounts");
+    throw error;
+  }
+}
+
 async function createInitialCarts() {
   console.log("Starting to fill carts...");
   try {
