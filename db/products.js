@@ -1,5 +1,4 @@
 const client = require("./client");
-
 async function createProduct({
   creatorId,
   categoryId,
@@ -7,8 +6,7 @@ async function createProduct({
   description,
   price,
   quantity,
-  img,
-  active,
+  imgURL,
 }) {
   try {
     const {
@@ -16,20 +14,20 @@ async function createProduct({
     } = await client.query(
       `
             INSERT INTO products(
-                creatorId,
-                categoryId,
+                "creatorId",
+                "categoryId",
                 name,
                 description,
                 price,
-                quantity
-                img,
-                active
+                quantity,
+               "imgURL"
+
             )
-            VALUES($1, $2, $3, $4, $5, $6, $7, $8)
+            VALUES($1, $2, $3, $4, $5, $6,$7)
             ON CONFLICT (name) DO NOTHING
             RETURNING *;
         `,
-      [creatorId, categoryId, name, description, price, quantity, img, active]
+      [creatorId, categoryId, name, description, price, quantity, imgURL]
     );
     return products;
   } catch (error) {
@@ -52,7 +50,6 @@ async function getProductById(id) {
     throw error;
   }
 }
-
 async function getProductsByCategory(categoryId) {
   try {
     const {
@@ -61,7 +58,7 @@ async function getProductsByCategory(categoryId) {
       `
         SELECT *
         FROM products
-        WHERE categoryId = $1;
+        WHERE "categoryId" = $1;
         `,
       [categoryId]
     );
@@ -71,7 +68,6 @@ async function getProductsByCategory(categoryId) {
     throw error;
   }
 }
-
 async function deleteProducts(productId) {
   try {
     const { rows } = await client.query(
@@ -83,14 +79,12 @@ async function deleteProducts(productId) {
         `,
       [productId]
     );
-
     return rows;
   } catch (error) {
     console.log(error);
     throw error;
   }
 }
-
 async function editProduct({ id, ...fields }) {
   const setString = Object.keys(fields)
     .map((key, index) => `"${key}"=$${index + 1}`)
@@ -107,27 +101,24 @@ async function editProduct({ id, ...fields }) {
         Object.values(fields)
       );
     }
-
     return await getProductById(id);
   } catch (error) {
     console.log(error);
     throw error;
   }
 }
-
 async function getProductsByUser(user_id) {
   try {
     const {
       rows: [products],
     } = await client.query(
       `
-          SELECT * 
+          SELECT *
           FROM products
-          WHERE user_id = $1;
+          WHERE "userId" = $1;
           `,
       [user_id]
     );
-
     return products;
   } catch (error) {
     console.log(error);
@@ -137,7 +128,6 @@ async function getProductsByUser(user_id) {
     };
   }
 }
-
 module.exports = {
   createProduct,
   getProductById,
