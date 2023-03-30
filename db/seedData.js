@@ -3,7 +3,7 @@ const { createUser } = require("./users");
 const { createCategories } = require("./productCategory");
 const { createProduct } = require("./products");
 const { addToCart, getCart } = require("./cart");
-
+const { createDiscount } = require("./discounts");
 function makeid(length) {
   let result = "";
   const characters =
@@ -20,7 +20,6 @@ function makeid(length) {
 let users = null;
 let categories = null;
 let products = null;
-
 async function dropTables() {
   console.log("Dropping All Tables...");
   // drop all tables, in the correct order
