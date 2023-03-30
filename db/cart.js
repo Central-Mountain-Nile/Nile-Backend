@@ -20,17 +20,17 @@ async function createCart(userId) {
 async function getCart(userId) {
   try {
     const {
-      rows: [cart],
+      rows,
     } = await client.query(
       `
       SELECT cart.*, cart_items.*
       FROM cart
-      JOIN ON cart.id=cart_items.cartId
+      JOIN cart_items 
+      ON cart.id=cart_items.cartId
       WHERE userId=${userId};
-          `,
-      [userId]
+          `
     );
-    return cart;
+    return rows;
   } catch (e) {
     throw e;
   }

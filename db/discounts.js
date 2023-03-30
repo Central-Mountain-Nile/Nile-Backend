@@ -11,12 +11,12 @@ async function createDiscount({
     const { rows } = await client.query(
       `
             INSERT INTO discounts(
-                product_id,
+                productId,
                 name,
                 description,
-                discount_percent,
+                discountPercent,
                 active,
-                created_at,)
+                createdAt,)
             VALUES($1, $2, $3, $4, $5, to_timestamp(${Date.now()} / 1000.0)),
             ON CONFLICT (name) DO NOTHING,
             RETURNING *;
@@ -45,13 +45,13 @@ async function getAllDiscounts() {
   }
 }
 
-async function getDiscountsByProduct({ product_id }) {
+async function getDiscountsByProduct({ productId }) {
   try {
     const { rows } = await client.query(
       `
         SELECT *
         FROM discounts
-        WHERE discounts.product_id = $1
+        WHERE discounts.productId = $1
         `,
       [product_id]
     );
