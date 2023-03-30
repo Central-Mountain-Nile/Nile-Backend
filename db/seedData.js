@@ -341,25 +341,34 @@ async function createInitialPayments() {
   }
 }
 async function createInitialOrderHistory() {
-  for (let i = 0; i < users.length; i++) {
-    if (Math.random() > 0.5) {
-      myCart = await getCart(users[i].id);
-      console.log(myCart);
-      let total = 0;
-      for (let j = 0; j < myCart.length; j++) {
-        mypId = myCart[j].productId;
-        myDiscount = await getDiscountsByProduct({ productId: mypId });
-        price = myCart[j].price;
-        myDiscountNumber = myDiscount[0].discountPercent;
-        total = total + (myDiscountNumber / 100) * price;
+  console.log("Starting to create orders...")
+  try{
+    for (let i = 0; i < users.length; i++) {
+      if (Math.random() > 0.5) {
+        myCart = await getCart(users[i].id);
+        console.log(myCart);
+        let total = 0;
+        for (let j = 0; j < myCart.length; j++) {
+          mypId = myCart[j].productId;
+          myDiscount = await getDiscountsByProduct({ productId: mypId });
+          price = myCart[j].price;
+          myDiscountNumber = myDiscount[0].discountPercent;
+          total = total + (myDiscountNumber / 100) * price;
+        }
+        total = total * 100;
+        total = Math.floor(total);
+        total = total / 100;
+        const order = await createOrder({ userId: users[i].id, total });
+        console.log(order);
       }
-      total = total * 100;
-      total = Math.floor(total);
-      total = total / 100;
-      const order = await createOrder({ userId: users[i].id, total });
-      console.log(order);
     }
+
+    console.log("finished creating orders!")
   }
+  catch(e){
+    console.log("error creating orders!")
+  }
+  
 } //userpayment, order, orderitems
 
 async function rebuildDB() {
