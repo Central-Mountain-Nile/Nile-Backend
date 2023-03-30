@@ -1,10 +1,10 @@
 const client = require("./client");
 
 async function createPayment({
-  user_id,
-  payment_type,
+  userId,
+  paymentType,
   provider,
-  account_no,
+  accountNo,
   expire,
 }) {
   try {
@@ -12,11 +12,11 @@ async function createPayment({
       rows: [user],
     } = await client.query(
       `
-        INSERT INTO user_payments(user_id, payment_type, provider, account_no, expire) 
-        VALUES($1, $2, $3, $4) 
+        INSERT INTO user_payments(userId, paymentType, provider, accountNo, expire) 
+        VALUES($1, $2, $3, $4, $5) 
         RETURNING *;
       `,
-      [user_id, payment_type, provider, account_no, expire]
+      [userId, paymentType, provider, accountNo, expire]
     );
     return user;
   } catch (error) {
@@ -24,32 +24,32 @@ async function createPayment({
     throw error;
   }
 }
-async function getPaymentByUser(user_id) {
+async function getPaymentByUser(userId) {
   try {
     const {
-      rows: [user_payment],
+      rows: [userPayment],
     } = await client.query(
       `
         SELECT * 
         FROM user_payments
-        WHERE user_id = $1;
+        WHERE userId = $1;
         `,
-      [user_id]
+      [userId]
     );
 
-    return user_payment;
+    return userPayment;
   } catch (error) {
     console.log(error);
     throw {
       name: "PaymentNotFoundError",
-      message: "Could not find payment with user_id given",
+      message: "Could not find payment with userId given",
     };
   }
 }
 async function getPaymentById(id) {
   try {
     const {
-      rows: [user_payment],
+      rows: [userPayment],
     } = await client.query(
       `
         SELECT * 
@@ -59,7 +59,7 @@ async function getPaymentById(id) {
       [id]
     );
 
-    return user_payment;
+    return userPayment;
   } catch (error) {
     console.log(error);
     throw {

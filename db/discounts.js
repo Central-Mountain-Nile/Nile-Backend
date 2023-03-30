@@ -18,7 +18,6 @@ async function createDiscount({
                 active,
                 createdAt)
             VALUES($1, $2, $3, $4, $5, to_timestamp(${Date.now()} / 1000.0))
-            ON CONFLICT (name) DO NOTHING,
             RETURNING *;
             `,
 

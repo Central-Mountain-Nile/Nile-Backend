@@ -36,6 +36,7 @@ async function dropTables() {
       DROP TABLE IF EXISTS cart_items;
       DROP TABLE IF EXISTS cart;
       DROP TABLE IF EXISTS user_payment;
+      DROP TABLE IF EXISTS user_payments;
       DROP TABLE IF EXISTS products;
       DROP TABLE IF EXISTS users;
       DROP TABLE IF EXISTS product_category;
@@ -95,7 +96,7 @@ async function createTables() {
       `);
 
     await client.query(`
-        CREATE TABLE user_payment (
+        CREATE TABLE user_payments (
         id SERIAL PRIMARY KEY,
         userId INTEGER REFERENCES users(id),
         paymentType VARCHAR(255) NOT NULL,
@@ -261,7 +262,7 @@ async function createInitialDiscounts() {
   console.log("starting creating discounts");
   try {
     for (let i = 0; i < products.length; i++) {
-      const productId = i;
+      const productId = products[i].id;
       const name = "testDiscount" + i;
       const description = "initial discount " + i;
       const discountPercent = Math.floor(Math.random() * 100) + 1;
@@ -309,10 +310,11 @@ async function createInitialCarts() {
 async function createInitialPayments() {
   console.log("Initializing Payments...");
   try {
+    let paymentsToCreate = [];
     for (let i = 0; i < users.length; i++) {
       //for every user
       for (let j = 0; j < 5; j++) {
-        const userId = i;
+        const userId = users[i].id;
         const paymentType = makeid(5);
         const provider = makeid(8);
         const accountNo = Math.floor(Math.random() * 1000) + 1
@@ -323,11 +325,11 @@ async function createInitialPayments() {
       }
     }
     for (let i = 0; i < users.length; i++) {
-      console.log(await createPayment(users[i].id));
+      console.log(await createPayment(paymentsToCreate[i]));
     }
-    console.log("Finished filling carts!");
+    console.log("Finished creating Payments!");
   } catch (e) {
-    console.error("Error filling carts!");
+    console.error("Error Creating payments!");
     throw e;
   }
 }
