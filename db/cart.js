@@ -23,10 +23,12 @@ async function getCart(userId) {
       rows,
     } = await client.query(
       `
-      SELECT cart.*, cart_items.*
+      SELECT cart.*, cart_items.*, products.quantity, products.price, products.active
       FROM cart
       JOIN cart_items 
       ON cart.id=cart_items.cartId
+      JOIN products 
+      ON cart_items.productId = products.id
       WHERE userId=${userId};
           `
     );
