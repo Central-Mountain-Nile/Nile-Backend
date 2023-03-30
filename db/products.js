@@ -7,7 +7,7 @@ async function createProduct({
   description,
   price,
   quantity,
-  imgURL
+  imgURL,
 }) {
   try {
     const {
@@ -28,13 +28,14 @@ async function createProduct({
             ON CONFLICT (name) DO NOTHING
             RETURNING *;
         `,
-      [creatorId, categoryId, name, description, price, quantity,imgURL]
+      [creatorId, categoryId, name, description, price, quantity, imgURL]
     );
     return products;
   } catch (error) {
     throw error;
   }
 }
+
 async function getProductById(id) {
   try {
     const {
@@ -51,6 +52,22 @@ async function getProductById(id) {
     throw error;
   }
 }
+
+async function getAllProducts() {
+  try {
+    const { rows } = await client.query(
+      `
+        SELECT *
+        FROM products
+        WHERE active = true;
+        `
+    );
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function getProductsByCategory(categoryId) {
   try {
     const {
@@ -136,4 +153,5 @@ module.exports = {
   getProductsByUser,
   getProductsByCategory,
   deleteProducts,
+  getAllProducts,
 };
