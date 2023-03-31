@@ -11,6 +11,9 @@ cartRouter.get("/", requireUser, async (req, res, next) => {
     res.send(cart);
 
     const cart = await getCart(userId);
+    const cartItems = await getCartItem(userId)
+    cart.cartItems = cartItems
+    res.send(cart)
   } catch (e) {
     next({
       name: "'cartError",

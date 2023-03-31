@@ -1,13 +1,19 @@
 const client = require("./client");
-const { createUser } = require("./users");
-const { createCategories } = require("./productCategory");
-const { createProduct } = require("./products");
-const { addToCart, getCart, clearCart, getCartItems } = require("./cart");
-const { createPayment, getPaymentByUser } = require("./users_payments");
-const { createDiscount, getDiscountsByProduct } = require("./discounts");
-const { createOrder } = require("./order");
-const { createOrderItems } = require("./orderItems");
-const { createOrderPayment } = require("./order_payment");
+const {
+  addToCart,
+  getCart,
+  clearCart,
+  getCartItems,
+  createOrderPayment,
+  createOrderItems,
+  createPayment,
+  getPaymentByUser,
+  createProduct,
+  createCategories,
+  createUser,
+  createDiscount,
+  createOrder,
+} = require("./");
 
 function makeid(length) {
   let result = "";
@@ -319,20 +325,20 @@ async function createInitialPayments() {
     let paymentsToCreate = [];
     for (let i = 0; i < users.length; i++) {
       //for every user
-        const userId = users[i].id;
-        const paymentType = makeid(5);
-        const provider = makeid(8);
-        const accountNo = Math.floor(Math.random() * 1000) + 1;
-        const expire = "03-30-2023";
-        paymentsToCreate.push({
-          userId,
-          paymentType,
-          provider,
-          accountNo,
-          expire,
-        });
-      }
-    
+      const userId = users[i].id;
+      const paymentType = makeid(5);
+      const provider = makeid(8);
+      const accountNo = Math.floor(Math.random() * 1000) + 1;
+      const expire = "03-30-2023";
+      paymentsToCreate.push({
+        userId,
+        paymentType,
+        provider,
+        accountNo,
+        expire,
+      });
+    }
+
     for (let i = 0; i < users.length; i++) {
       console.log(await createPayment(paymentsToCreate[i]));
     }
@@ -343,12 +349,13 @@ async function createInitialPayments() {
   }
 }
 async function createInitialOrderHistory() {
-  console.log("Starting to create orders...")
-  try{
+  console.log("Starting to create orders...");
+  try {
     for (let i = 0; i < users.length; i++) {
-      if (Math.random() > 0.5) {//only put half the carts as orders
+      if (Math.random() > 0.5) {
+        //only put half the carts as orders
         const myCart = await getCart(users[i].id);
-        const myCartItems = await getCartItems(users[i].id)
+        const myCartItems = await getCartItems(users[i].id);
         let total = 0;
 
         for (let j = 0; j < myCartItems.length; j++) {
@@ -362,26 +369,32 @@ async function createInitialOrderHistory() {
         total = total * 100;
         total = Math.floor(total);
         total = total / 100;
-        const clear = await clearCart(myCart.id)
+        const clear = await clearCart(myCart.id);
         const order = await createOrder({ userId: users[i].id, total });
-        console.log(order)
-        for (let j = 0; j < clear.length;j++){
-          const orderItem = await createOrderItems({orderId:order.id, productId:clear[j].productId,quantity: clear[j].quantity})
-          console.log(orderItem)
+        console.log(order);
+        for (let j = 0; j < clear.length; j++) {
+          const orderItem = await createOrderItems({
+            orderId: order.id,
+            productId: clear[j].productId,
+            quantity: clear[j].quantity,
+          });
+          console.log(orderItem);
         }
 
-        const userPayments = await getPaymentByUser(users[i].id)
-        const payment = await createOrderPayment({orderId:order.id,provider:userPayments[0].provider,status:'good'})
-        console.log(payment)
+        const userPayments = await getPaymentByUser(users[i].id);
+        const payment = await createOrderPayment({
+          orderId: order.id,
+          provider: userPayments[0].provider,
+          status: "good",
+        });
+        console.log(payment);
       }
     }
 
-    console.log("finished creating orders!")
+    console.log("finished creating orders!");
+  } catch (e) {
+    console.log("error creating orders!");
   }
-  catch(e){
-    console.log("error creating orders!")
-  }
-  
 } //userpayment, order, orderitems
 
 async function rebuildDB() {
