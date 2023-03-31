@@ -73,7 +73,6 @@ router.post("/register", async (req, res, next) => {
 //POST /api/users/login
 router.post("/login", async (req, res, next) => {
   const { username, password } = req.body;
-
   if (!username || !password) {
     next({
       name: "MissingCredentialsError",
@@ -83,6 +82,7 @@ router.post("/login", async (req, res, next) => {
 
   try {
     const user = await getUsersByUsername(username);
+    console.log(user)
     if (user && user.password == password) {
       const id = user.id;
       const username = user.username;
