@@ -1,13 +1,12 @@
 const express = require("./client");
 const { getCart, addToCart } = require("../db/cart");
-const { deleteCartItem } = require("../db/cartItems");
+const { deleteCartItem, getCartItem } = require("../db/cartItems");
 const cartRouter = express.Router();
 // get cart /api/cart/
-cartRouter.get("/", async (req, res, next) => {
+cartRouter.get("/",  requireUser, async (req, res, next) => {
   try {
-    //check that user token sent belongs to cart
-    //else send error for bad cart request or user not existing
-    const userId = req.user.id
+    //uses the check login to make sure that user exists
+    const userId = req.user.id;
     res.send(cart);
 
     const cart = await getCart(userId);
@@ -19,32 +18,44 @@ cartRouter.get("/", async (req, res, next) => {
   }
 });
 // add to cart /api/cart/
-cartRouter.post("/", async (req,res,next)=>{
-    const { productId, cartId, quantity } = req.body;
-    try {
-        const cartItem = await addToCart({productId, cartId, quantity});
-        res.send(cartItem);
-      } catch (error) {
-        next({
-            name: "add to cart Error",
-          message: "Could not find this product",
-        });
-      }
-})
+cartRouter.post("/", requireUser, async (req, res, next) => {
+  const { productId, quantity } = req.body;
+  //get cart frm user token
+
+  try {
+    const cart = await getCart(req.user.id);
+
+
+
+    const cartItem = await addToCart({ productId, cartId: cart.id, quantity });
+    res.send(cartItem);
+  } catch (error) {
+    next({
+      name: "add to cart Error",
+      message: "Could not find this product",
+    });
+  }
+});
 
 //remove from cart /api/cart/
-cartRouter.delete("/", async (req,res,next)=>{
+cartRouter.delete("/", requireUser, async (req, res, next) => {
   const { cartItemId } = req.body;
   try {
-      const cartItem = await deleteCartItem(cartItemId)
-      res.send(cartItem);
-    } catch (error) {
+    //check if cart item exists
+    const check = await getCartItem(cartItemId);
+    if (!check) {
       next({
-          name: "remove from cart Error",
-        message: "Could not find this cart item",
+        name: "notFoundError",
+        message: `the cartItem with id ${cartItemId} was not found`,
       });
     }
 
-
-
-})
+    const cartItem = await deleteCartItem(cartItemId);
+    res.send(cartItem);
+  } catch (error) {
+    next({
+      name: "remove from cart Error",
+      message: "Could not find this cart item",
+    });
+  }
+});
