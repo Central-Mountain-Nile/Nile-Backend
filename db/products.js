@@ -128,7 +128,7 @@ async function editProduct({ id, ...fields }) {
 async function getProductsByUser(user_id) {
   try {
     const {
-      row,
+      rows,
     } = await client.query(
       `
           SELECT *

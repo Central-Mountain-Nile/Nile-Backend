@@ -9,7 +9,7 @@ const {
   getProductsByCategory,
   deleteProducts,
   getAllProducts,
-} = require("..db/");
+} = require("../db/");
 
 // GET /api/products
 router.get("/", async (req, res, next) => {
@@ -134,4 +134,4 @@ router.get("/categoryId", async (req, res, next) => {
   } catch (error) {}
 });
 
-module.export = router;
+module.exports = router;
