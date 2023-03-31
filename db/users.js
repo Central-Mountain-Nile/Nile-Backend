@@ -45,8 +45,8 @@ async function createUser({
     );
     delete user.password;
 
-    const cart = await createCart(user.id)
-    user.cart = cart
+    const cart = await createCart(user.id);
+    user.cart = cart;
     return user;
   } catch (error) {
     throw error;

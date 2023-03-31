@@ -6,7 +6,19 @@ const jwt = require("jsonwebtoken");
 
 //POST api/users/register
 router.post("/register", async (req, res, next) => {
-  const { username, password } = req.body;
+  const {
+    firstName,
+    lastName,
+    username,
+    password,
+    addressLineOne,
+    addressLineTwo,
+    city,
+    state,
+    country,
+    postalCode,
+    email,
+  } = req.body;
   try {
     const _user = await getUsersByUsername(username);
 
@@ -24,9 +36,19 @@ router.post("/register", async (req, res, next) => {
       });
     }
     const user = await createUser({
+      firstName,
+      lastName,
       username,
       password,
+      addressLineOne,
+      addressLineTwo,
+      city,
+      state,
+      country,
+      postalCode,
+      email,
     });
+
     const token = jwt.sign(
       {
         id: user.id,
