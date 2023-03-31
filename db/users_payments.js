@@ -26,9 +26,7 @@ async function createPayment({
 }
 async function getPaymentByUser(userId) {
   try {
-    const {
-      rows,
-    } = await client.query(
+    const { rows } = await client.query(
       `
         SELECT * 
         FROM user_payments
@@ -53,7 +51,7 @@ async function getPaymentById(id) {
     } = await client.query(
       `
         SELECT * 
-        FROM user_payment
+        FROM user_payments
         WHERE id = $1;
         `,
       [id]
@@ -76,7 +74,7 @@ async function patchPayment({ id, ...fields }) {
     if (setString.length > 0) {
       await client.query(
         `
-            UPDATE user_payment
+            UPDATE user_payments
             SET ${setString}
             WHERE id=${id}
             RETURNING *;
@@ -95,7 +93,7 @@ async function deletePayment(id) {
   try {
     const { rows } = await client.query(
       `
-          DELETE FROM user_payment
+          DELETE FROM user_payments
           WHERE id = $1
           RETURNING *;
           `,
