@@ -3,7 +3,6 @@ const { createOrderItems } = require("./orderItems");
 
 async function createOrder({ userId, total }) {
   try {
-
     const {
       rows: [order],
     } = await client.query(
@@ -68,11 +67,53 @@ async function getOrdersByUser(userId) {
     throw e;
   }
 }
+async function updateOrder({ id, ...fields }) {
+  const setString = Object.keys(fields)
+    .map((key, index) => `"${key}"=$${index + 1}`)
+    .join(", ");
+  try {
+    if (setString.length > 0) {
+      await client.query(
+        `
+          UPDATE orders
+          SET ${setString}
+          WHERE id=${id}
+          RETURNING *;
+        `,
+        Object.values(fields)
+      );
+    }
 
+    return await getOrder(id);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+async function deleteOrder(usersId) {
+  try {
+    const { rows } = await client.query(
+      `
+      DELETE FROM orders
+      WHERE id = $1
+      RETURNING *;
+      `,
+      [usersId]
+    );
+
+    return rows;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 
 module.exports = {
   createOrder,
   getAllOrders,
   getOrder,
-  getOrdersByUser
-}
+  getOrdersByUser,
+  updateOrder,
+  deleteOrder,
+};
