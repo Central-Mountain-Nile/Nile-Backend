@@ -60,4 +60,47 @@ router.get("/:productId", async (req, res, next) => {
   }
 });
 
+router.patch("/:productId", async (req, res, next) => {
+  const productData = { 
+    creatorId: req.user.id,
+    categoryId: req.body.isPublic,
+    name: req.body.name,
+    description: req.body.description,
+    price: req.body.price,
+    quantity: req.body.quantity,
+    imgURL: req.body.imgURL,
+  };
+  try {
+    const editedProduct = await getProductById(productData);
+    if (product.creatorId === req.user.id) {
+      const result = await editProduct(productData);
+      res.send(productData);
+    }
+  } catch (error) {
+    next ({
+      name: "updateError",
+      message: "Could not update product"
+    });
+  }
+});
+
+router.delete("/:productId" , async (req, res, next) => {
+  try {
+    const {productId} = req.params;
+    const product = await getProductById(productId);
+    if (!product) {
+      next ({
+        name: "Deletion Error",
+        message: "Error deleting product"
+      });
+    } else {
+      const deletedProduct = await deleteProducts(productId);
+      res.send(deletedProduct)
+    }
+  } catch ({name, message}) {
+    next ({ name, message});
+  }
+})
+
+
 module.export = router;
