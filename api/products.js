@@ -74,7 +74,7 @@ router.patch("/:productId", async (req, res, next) => {
     const editedProduct = await getProductById(productData);
     if (product.creatorId === req.user.id) {
       const result = await editProduct(productData);
-      res.send(productData);
+      res.send(editedProduct);
     }
   } catch (error) {
     next ({
