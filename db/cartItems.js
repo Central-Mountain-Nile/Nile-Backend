@@ -35,7 +35,23 @@ async function deleteCartItem(id) {
     throw e;
   }
 }
+
+async function getCartItem(id){
+  try {
+    const {
+      rows: [cartItem],
+    } = await client.query(`
+      SELECT * 
+      FROM cart_items
+      WHERE id=${id};
+    `);
+    return cartItem;
+  } catch (e) {
+    throw e;
+  }
+}
 module.exports = {
   deleteCartItem,
   updateCartItem,
+  getCartItem
 };
