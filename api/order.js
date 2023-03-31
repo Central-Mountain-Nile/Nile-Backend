@@ -26,7 +26,7 @@ router.get("/", async (req, res, next) => {
 
 //POST /api/order
 router.post("/", requireUser, async (req, res, next) => {
-  const { userId, total } = req.body;
+  const { orderId, total } = req.body;
   const orderData = {
     orderId: req.user.id,
     userId,
@@ -43,7 +43,7 @@ router.post("/", requireUser, async (req, res, next) => {
       });
     }
   } catch ({ name, message }) {
-    next({ name, message: `Order ID: ${orderId} already exists!` });
+    next({ name, message: `Order ID: ${orders.id} already exists!` });
   }
 });
 
