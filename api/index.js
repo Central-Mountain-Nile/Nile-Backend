@@ -44,17 +44,17 @@ router.use(async (req, res, next) => {
 const usersRouter = require("./users");
 router.use("/users", usersRouter);
 
-// ROUTER: /api/cart
-const cartRouter = require("./cart");
-router.use("/cart", cartRouter);
+// // ROUTER: /api/cart
+// const cartRouter = require("./carts");
+// router.use("/carts", cartRouter);
 
 // ROUTER: /api/order
 const orderRouter = require("./order");
 router.use("/order", orderRouter);
 
-// ROUTER: /api/products
-const productsRouter = require("./products");
-router.use("/products", productsRouter);
+// // ROUTER: /api/products
+// const productsRouter = require("./products");
+// router.use("/products", productsRouter);
 
 // ROUTER: /api/users_payments
 const users_paymentsRouter = require("./users_payments");
