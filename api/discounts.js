@@ -7,6 +7,7 @@ const {
     getDiscountsByProduct,
     deleteDiscounts
   } = require("../db/");
+const { requireUser } = require("./utils");
 
 
 router.post("/", async (req, res, next) => {
@@ -25,7 +26,7 @@ router.post("/", async (req, res, next) => {
     } catch (error) {
         next ({
             name: "discount error",
-            message: "Error creting discount"
+            message: "Error creating discount"
         });
     }
 });
@@ -42,3 +43,16 @@ router.post("/", async (req, res, next) => {
       });
     }
   });
+
+  //patch discount
+  router.patch("/", requireUser, async (req, res, next) => {
+    try{
+      const discount = req.body.discount
+      const editedDiscount = await editDiscounts(req.body.userId, discount)
+    }catch(error){
+      next({
+        name: "discountsError",
+        message: "Error editing discount"
+      })
+    }
+  })
