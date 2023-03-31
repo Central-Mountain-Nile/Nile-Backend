@@ -1,4 +1,5 @@
 const express = require("express");
+const { requireUser } = require("./utils");
 
 const router = express.Router();
 const {
@@ -12,7 +13,7 @@ const {
 } = require("../db/");
 
 // GET /api/products
-router.get("/", async (req, res, next) => {
+router.get("/", requireUser, async (req, res, next) => {
   try {
     const products = await getAllProducts();
     res.send(products);
@@ -24,9 +25,9 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/", requireUser, async (req, res, next) => {
   const productData = {
-    creatorId: req.user.id,
+    creatorId: req.body.id,
     categoryId: req.body.isPublic,
     name: req.body.name,
     description: req.body.description,
@@ -47,7 +48,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.get("/:productId", async (req, res, next) => {
+router.get("/:productId", requireUser, async (req, res, next) => {
   const { productId } = req.params;
   try {
     const product = await getProductById(productId);
@@ -59,9 +60,9 @@ router.get("/:productId", async (req, res, next) => {
   }
 });
 
-router.patch("/:productId", async (req, res, next) => {
+router.patch("/:productId", requireUser, async (req, res, next) => {
   const productData = {
-    creatorId: req.user.id,
+    creatorId: req.body.id,
     categoryId: req.body.categoryId,
     name: req.body.name,
     description: req.body.description,
@@ -70,9 +71,15 @@ router.patch("/:productId", async (req, res, next) => {
     imgURL: req.body.imgURL,
   };
   try {
-    if (product.creatorId === req.user.id) {
+    if (productData.creatorId === req.user.id) {
+      console.log("!!!!!!!");
       const result = await editProduct(productData);
       res.send(result);
+    } else {
+      next({
+        name: "updateError",
+        message: "user not authorized update product",
+      });
     }
   } catch (error) {
     next({
@@ -82,7 +89,7 @@ router.patch("/:productId", async (req, res, next) => {
   }
 });
 
-router.delete("/:productId", async (req, res, next) => {
+router.delete("/:productId", requireUser, async (req, res, next) => {
   try {
     const { productId } = req.params;
     const product = await getProductById(productId);
@@ -100,7 +107,7 @@ router.delete("/:productId", async (req, res, next) => {
   }
 });
 
-router.get("/products", async (req, res, next) => {
+router.get("/products", requireUser, async (req, res, next) => {
   const userId = req.user.id;
   try {
     const product = await getProductsByUser(userId);
@@ -118,7 +125,7 @@ router.get("/products", async (req, res, next) => {
   }
 });
 
-router.get("/categoryId", async (req, res, next) => {
+router.get("/categoryId", requireUser, async (req, res, next) => {
   const categoryId = req.user.id;
   try {
     const category = await getProductsByCategory(categoryId);
