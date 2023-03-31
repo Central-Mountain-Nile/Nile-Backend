@@ -54,7 +54,6 @@ router.get("/:productId", async (req, res, next) => {
     res.send(product);
   } catch (error) {
     next({
-      name: "productsError",
       message: "Could not find this product",
     });
   }
