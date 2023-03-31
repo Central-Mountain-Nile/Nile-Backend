@@ -1,7 +1,8 @@
 const express = require("./client");
 const { getCart, addToCart } = require("../db/cart");
+const { deleteCartItem } = require("../db/cartItems");
 const cartRouter = express.Router();
-
+// get cart /api/cart/
 cartRouter.get("/", async (req, res, next) => {
   try {
     //check that user token sent belongs to cart
@@ -17,6 +18,7 @@ cartRouter.get("/", async (req, res, next) => {
     });
   }
 });
+// add to cart /api/cart/
 cartRouter.post("/", async (req,res,next)=>{
     const { productId, cartId, quantity } = req.body;
     try {
@@ -28,4 +30,21 @@ cartRouter.post("/", async (req,res,next)=>{
           message: "Could not find this product",
         });
       }
+})
+
+//remove from cart /api/cart/
+cartRouter.delete("/", async (req,res,next)=>{
+  const { cartItemId } = req.body;
+  try {
+      const cartItem = await deleteCartItem(cartItemId)
+      res.send(cartItem);
+    } catch (error) {
+      next({
+          name: "remove from cart Error",
+        message: "Could not find this cart item",
+      });
+    }
+
+
+
 })
