@@ -6,6 +6,8 @@ const {
   getOrdersByUser,
   updateOrder,
   deleteOrder,
+  createOrderItems,
+  createOrderPayment,
 } = require("../db");
 const { requireUser } = require("./utils");
 const router = express.Router();
@@ -26,7 +28,7 @@ router.get("/", async (req, res, next) => {
 
 //POST /api/order
 router.post("/", requireUser, async (req, res, next) => {
-  const { orderId, total } = req.body;
+  const { orderId, total, orderItemData, orderPaymentData } = req.body;
   const orderData = {
     orderId: req.user.id,
     userId,
@@ -34,14 +36,22 @@ router.post("/", requireUser, async (req, res, next) => {
   };
   try {
     const order = await createOrder(orderData);
-    if (order) {
-      res.send(order);
-    } else {
+    if (!order) {
       next({
         name: "OrderCreationError",
         message: "Invalid Order",
       });
     }
+    const orderPayment = await createOrderPayment(orderPaymentData);
+    order.payment = orderPayment;
+    let orders = [];
+    for (let i = 0; i < orderItems.length; i++) {
+      const orderItem = await createOrderItems(orderItemData[i]);
+      orders.push(orderItem);
+    }
+    order.item = orders;
+
+    res.send(order);
   } catch ({ name, message }) {
     next({ name, message: `Order ID: ${orders.id} already exists!` });
   }
