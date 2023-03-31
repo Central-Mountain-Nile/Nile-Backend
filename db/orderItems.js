@@ -19,8 +19,24 @@ async function createOrderItems({ orderId, productId, quantity }) {
   }
 }
 
+async function getOrderItemByProduct(productId){
+  try {
+    const { rows } = await client.query(
+      `
+        SELECT *
+        FROM order_items
+        WHERE "productId"=${productId};
+        `
+    );
+    return payment;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 module.exports = {
   createOrderItems,
+  getOrderItemByProduct
 };
 //to_timestamp(${Date.now()} / 1000.0)
 //ahahahahsihioxwiojcbeiowdsc
