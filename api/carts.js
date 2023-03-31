@@ -58,3 +58,4 @@ cartRouter.delete("/", requireUser, async (req, res, next) => {
     });
   }
 });
+module.exports = cartRouter
