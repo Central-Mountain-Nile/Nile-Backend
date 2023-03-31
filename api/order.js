@@ -42,11 +42,11 @@ router.post("/", requireUser, async (req, res, next) => {
         message: "Invalid Order",
       });
     }
-    const orderPayment = await createOrderPayment(orderPaymentData);
+    const orderPayment = await createOrderPayment({orderId:order.id,...orderPaymentData});
     order.payment = orderPayment;
     let orders = [];
     for (let i = 0; i < orderItems.length; i++) {
-      const orderItem = await createOrderItems(orderItemData[i]);
+      const orderItem = await createOrderItems({orderId:order.id,...orderItemData[i]});
       orders.push(orderItem);
     }
     order.item = orders;

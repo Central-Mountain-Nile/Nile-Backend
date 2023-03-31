@@ -11,4 +11,5 @@ module.exports = {
   ...require("./products"),
   ...require("./users_payments"),
   ...require("./users"),
+  ...require("./discounts"),
 };
