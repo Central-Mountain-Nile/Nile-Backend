@@ -1,4 +1,5 @@
 const client = require("./client");
+
 async function createProduct({
   creatorId,
   categoryId,
@@ -80,7 +81,7 @@ async function getProductsByCategory(categoryId) {
       [categoryId]
     );
     console.log(products);
-    return products;
+    return rows;
   } catch (error) {
     throw error;
   }
@@ -127,7 +128,7 @@ async function editProduct({ id, ...fields }) {
 async function getProductsByUser(user_id) {
   try {
     const {
-      rows: [products],
+      row,
     } = await client.query(
       `
           SELECT *
@@ -136,7 +137,7 @@ async function getProductsByUser(user_id) {
           `,
       [user_id]
     );
-    return products;
+    return rows;
   } catch (error) {
     console.log(error);
     throw {

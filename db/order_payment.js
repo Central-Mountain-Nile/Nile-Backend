@@ -1,13 +1,13 @@
 const client = require("./client");
 
-async function createPaymentDetails({ orderId, provider, status }) {
+async function createOrderPayment({ orderId, provider, status }) {
   try {
     const {
       rows: [payment],
     } = await client.query(
       `
-        INSERT INTO order_payment( "orderId", provider, status, "createdAt") 
-        VALUES($1, $2, $3, to_timestamp(${Date.now()} / 1000.0)) 
+        INSERT INTO order_payment( "orderId", provider, status) 
+        VALUES($1, $2, $3) 
         RETURNING *;
       `,
       [orderId, provider, status]
@@ -20,6 +20,6 @@ async function createPaymentDetails({ orderId, provider, status }) {
 }
 
 module.exports = {
-  createPaymentDetails,
+  createOrderPayment,
 };
 //to_timestamp(${Date.now()} / 1000.0)

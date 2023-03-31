@@ -2,10 +2,12 @@ const client = require("./client");
 const { createUser } = require("./users");
 const { createCategories } = require("./productCategory");
 const { createProduct } = require("./products");
-const { addToCart, getCart } = require("./cart");
-const { createPayment } = require("./users_payments");
+const { addToCart, getCart, clearCart, getCartItems } = require("./cart");
+const { createPayment, getPaymentByUser } = require("./users_payments");
 const { createDiscount, getDiscountsByProduct } = require("./discounts");
 const { createOrder } = require("./order");
+const { createOrderItems } = require("./orderItems");
+const { createOrderPayment } = require("./order_payment");
 
 function makeid(length) {
   let result = "";
@@ -36,6 +38,7 @@ async function dropTables() {
       DROP TABLE IF EXISTS orders;
       DROP TABLE IF EXISTS cart_items;
       DROP TABLE IF EXISTS cart;
+      DROP TABLE IF EXISTS carts;
       DROP TABLE IF EXISTS user_payment;
       DROP TABLE IF EXISTS user_payments;
       DROP TABLE IF EXISTS products;
@@ -107,7 +110,7 @@ async function createTables() {
       );
     `);
     await client.query(`
-        CREATE TABLE cart (
+        CREATE TABLE carts (
         id SERIAL PRIMARY KEY,
         "userId" INTEGER UNIQUE REFERENCES users(id)
     );
@@ -115,7 +118,7 @@ async function createTables() {
     await client.query(`
         CREATE TABLE cart_items (
         id SERIAL PRIMARY KEY,
-        "cartId" INTEGER REFERENCES cart(id),
+        "cartId" INTEGER REFERENCES carts(id),
         "productId" INTEGER REFERENCES products(id),
         quantity INTEGER NOT NULL
   );
@@ -316,7 +319,6 @@ async function createInitialPayments() {
     let paymentsToCreate = [];
     for (let i = 0; i < users.length; i++) {
       //for every user
-      for (let j = 0; j < 5; j++) {
         const userId = users[i].id;
         const paymentType = makeid(5);
         const provider = makeid(8);
@@ -330,7 +332,7 @@ async function createInitialPayments() {
           expire,
         });
       }
-    }
+    
     for (let i = 0; i < users.length; i++) {
       console.log(await createPayment(paymentsToCreate[i]));
     }
@@ -341,25 +343,45 @@ async function createInitialPayments() {
   }
 }
 async function createInitialOrderHistory() {
-  for (let i = 0; i < users.length; i++) {
-    if (Math.random() > 0.5) {
-      myCart = await getCart(users[i].id);
-      console.log(myCart);
-      let total = 0;
-      for (let j = 0; j < myCart.length; j++) {
-        mypId = myCart[j].productId;
-        myDiscount = await getDiscountsByProduct({ productId: mypId });
-        price = myCart[j].price;
-        myDiscountNumber = myDiscount[0].discountPercent;
-        total = total + (myDiscountNumber / 100) * price;
+  console.log("Starting to create orders...")
+  try{
+    for (let i = 0; i < users.length; i++) {
+      if (Math.random() > 0.5) {//only put half the carts as orders
+        const myCart = await getCart(users[i].id);
+        const myCartItems = await getCartItems(users[i].id)
+        let total = 0;
+
+        for (let j = 0; j < myCartItems.length; j++) {
+          mypId = myCartItems[j].productId;
+          myDiscount = await getDiscountsByProduct({ productId: mypId });
+          price = myCartItems[j].price;
+          myDiscountNumber = myDiscount[0].discountPercent;
+          total = total + (myDiscountNumber / 100) * price;
+        }
+
+        total = total * 100;
+        total = Math.floor(total);
+        total = total / 100;
+        const clear = await clearCart(myCart.id)
+        const order = await createOrder({ userId: users[i].id, total });
+        console.log(order)
+        for (let j = 0; j < clear.length;j++){
+          const orderItem = await createOrderItems({orderId:order.id, productId:clear[j].productId,quantity: clear[j].quantity})
+          console.log(orderItem)
+        }
+
+        const userPayments = await getPaymentByUser(users[i].id)
+        const payment = await createOrderPayment({orderId:order.id,provider:userPayments[0].provider,status:'good'})
+        console.log(payment)
       }
-      total = total * 100;
-      total = Math.floor(total);
-      total = total / 100;
-      const order = await createOrder({ userId: users[i].id, total });
-      console.log(order);
     }
+
+    console.log("finished creating orders!")
   }
+  catch(e){
+    console.log("error creating orders!")
+  }
+  
 } //userpayment, order, orderitems
 
 async function rebuildDB() {

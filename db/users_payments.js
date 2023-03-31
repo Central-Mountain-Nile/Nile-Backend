@@ -27,7 +27,7 @@ async function createPayment({
 async function getPaymentByUser(userId) {
   try {
     const {
-      rows: [userPayment],
+      rows,
     } = await client.query(
       `
         SELECT * 
@@ -37,7 +37,7 @@ async function getPaymentByUser(userId) {
       [userId]
     );
 
-    return userPayment;
+    return rows;
   } catch (error) {
     console.log(error);
     throw {
