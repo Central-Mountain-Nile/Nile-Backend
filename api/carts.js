@@ -1,10 +1,10 @@
-const express = require("./client");
-const { getCart, addToCart } = require("../db/cart");
+const express = require("express");
+const { getCart, addToCart } = require("../db/carts");
 const { deleteCartItem, getCartItem } = require("../db/cartItems");
 const { requireUser } = require("./utils");
 const cartRouter = express.Router();
 // get cart /api/cart/
-cartRouter.get("/",  requireUser, async (req, res, next) => {
+cartRouter.get("/", requireUser, async (req, res, next) => {
   try {
     //uses the check login to make sure that user exists
     const userId = req.user.id;
@@ -25,8 +25,6 @@ cartRouter.post("/", requireUser, async (req, res, next) => {
 
   try {
     const cart = await getCart(req.user.id);
-
-
 
     const cartItem = await addToCart({ productId, cartId: cart.id, quantity });
     res.send(cartItem);

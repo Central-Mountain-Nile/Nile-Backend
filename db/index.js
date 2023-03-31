@@ -1,11 +1,12 @@
 
 
 module.exports = {
-  ...require("./cart"),
+  ...require("./client"),
+  ...require("./carts"),
   ...require("./cartItems"),
   ...require("./order"),
   ...require("./orderItems"),
-  ...require("./paymentDetails"),
+  ...require("./order_payment"),
   ...require("./productCategory"),
   ...require("./products"),
   ...require("./users_payments"),
