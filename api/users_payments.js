@@ -31,7 +31,7 @@ router.post("/", requireUser, async (req, res, next) => {
   const { paymentType, provider, accountNo, expire } = req.body;
 
   const paymentData = {
-    paymentId: req.user.id,
+    userId: req.user.id,
     paymentType,
     provider,
     accountNo,
