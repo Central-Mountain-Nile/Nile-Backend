@@ -21,11 +21,10 @@ async function getAllOrders() {
   try {
     const { rows } = await client.query(
       `
-              SELECT orders.*, order_items.*, payment_details.*
+              SELECT orders.*, order_items.*, order_payment.*
               FROM orders
               JOIN order_items ON orders.id=order_items."orderId"
-              JOIN payment_details ON orders.id=payment_details."orderId"
-              WHERE orders.id=${orderId};
+              JOIN order_payment ON orders.id=order_payment."orderId";
               `
     );
     return rows;

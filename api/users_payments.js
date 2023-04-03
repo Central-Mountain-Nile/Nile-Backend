@@ -11,8 +11,8 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 
 // GET /api/user_payments
-router.get("/", async (req, res, next) => {
-  const { userId } = req.body;
+router.get("/", requireUser, async (req, res, next) => {
+  const { userId } = req.user.id;
 
   try {
     const getPayments = await getPaymentByUser(userId);
