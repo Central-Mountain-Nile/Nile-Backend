@@ -80,6 +80,7 @@ async function getUsersById(usersId) {
       `,
       [usersId]
     );
+    console.log("users", users);
     delete users.password;
     return users;
   } catch (error) {

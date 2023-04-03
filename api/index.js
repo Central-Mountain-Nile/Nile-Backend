@@ -24,9 +24,9 @@ router.use(async (req, res, next) => {
 
     try {
       const { id } = jwt.verify(token, JWT_SECRET);
-
       if (id) {
         req.user = await getUsersById(id);
+        console.log("hello");
         next();
       }
     } catch ({ name, message }) {
@@ -59,5 +59,9 @@ router.use("/products", productsRouter);
 // ROUTER: /api/users_payments
 const users_paymentsRouter = require("./users_payments");
 router.use("/users_payments", users_paymentsRouter);
+
+// ROUTER: /api/users_payments
+const discountsRouter = require("./discounts");
+router.use("/discounts", discountsRouter);
 
 module.exports = router;
