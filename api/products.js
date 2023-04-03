@@ -150,24 +150,40 @@ router.get("/category/:categoryId/:pageNumber/", async (req, res, next) => {
         }
       }
       products = newProducts;
-
     }
     front = (pageNumber - 1) * 25;
-    back = pageNumber * 25
+    back = pageNumber * 25;
 
     const productPage = products.slice(front, back);
 
     res.send(productPage);
   } catch (error) {
-    throw error
+    throw error;
   }
 });
 
 // GET /api/products/pageNumber
-router.get("/:pageNumber/:searchTerm", requireUser, async (req, res, next) => {
+router.get("/:pageNumber", async (req, res, next) => {
   try {
+    const { pageNumber } = req.params;
+    const { searchTerm } = req.body;
     const products = await getAllProducts();
-    res.send(products);
+    if (searchTerm) {
+      const newProducts = [];
+      for (let i = 0; i < products.length; i++) {
+        if (products[i].name.toLowerCase().includes(searchTerm.toLowerCase())) {
+          //if the name includes the search term
+          newProducts.push(products[i]);
+        }
+      }
+      products = newProducts;
+    }
+    front = (pageNumber - 1) * 25;
+    back = pageNumber * 25;
+
+    const productPage = products.slice(front, back);
+
+    res.send(productPage);
   } catch (error) {
     next({
       name: "productsError",
