@@ -15,7 +15,6 @@ router.get("/", async (req, res, next) => {
   try {
     const allDiscounts = await getAllDiscounts();
     const discount = allDiscounts.filter((discount) => {
-      console.log(discount, "!!!!!!!!!!");
       return discount;
     });
 
@@ -27,7 +26,6 @@ router.get("/", async (req, res, next) => {
 
 // POST /api/discounts
 router.post("/", requireUser, async (req, res, next) => {
-  console.log("!!!!!!!!!!!");
   const { productId, name, description, discountPercent, active } = req.body;
 
   const discountData = {
@@ -62,7 +60,6 @@ router.patch("/:productId", requireUser, async (req, res, next) => {
   try {
     const { productId } = req.params;
     const getProductId = await getDiscountsByProduct(productId);
-    console.log(getProductId);
     if (!getProductId) {
       next({
         name: "DiscountNotFound",
@@ -71,25 +68,18 @@ router.patch("/:productId", requireUser, async (req, res, next) => {
     } else {
       const { productId, name, description, discountPercent, active } =
         req.body;
-      try {
-        const updatedDiscount = await editDiscounts({
-          id: productId,
-          name,
-          description,
-          discountPercent,
-          active,
-        });
-        res.send(updatedDiscount);
-      } catch (error) {
-        next({
-          name: "",
-          message: `A discount with ID ${productId} already exists`,
-        });
-        console.log(error);
-      }
+
+      const updatedDiscount = await editDiscounts({
+        id: productId,
+        name,
+        description,
+        discountPercent,
+        active,
+      });
+      res.send(updatedDiscount);
     }
   } catch (error) {
-    console.log(error);
+   throw error
   }
 });
 
@@ -124,4 +114,3 @@ router.delete("/:productId", requireUser, async (req, res, next) => {
 });
 
 module.exports = router;
-

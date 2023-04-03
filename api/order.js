@@ -51,7 +51,6 @@ router.post("/", requireUser, async (req, res, next) => {
   //check that the products have enough quantity else go next
   for(let i = 0; i < cartItems.length; i++){
     const product = await getProductById(cartItems[i].productId)
-    console.log(cartItems[i].quantity, product.quantity)
     if(cartItems[i].quantity > product.quantity){
       next({name:"orderError",message:`not enough of ${product.name} left in stock`})
       return;
@@ -123,7 +122,7 @@ router.patch("/:orderId", requireUser, async (req, res, next) => {
       }
     }
   } catch (error) {
-    console.log(error);
+    throw error
   }
 });
 

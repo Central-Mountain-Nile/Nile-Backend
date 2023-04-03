@@ -82,7 +82,6 @@ router.post("/login", async (req, res, next) => {
 
   try {
     const user = await getUsersByUsername(username);
-    console.log(user)
     if (user && user.password == password) {
       const id = user.id;
       const username = user.username;
@@ -98,7 +97,6 @@ router.post("/login", async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log(error);
     next(error);
   }
 });

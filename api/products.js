@@ -25,7 +25,6 @@ router.post("/", requireUser, async (req, res, next) => {
   productData.creatorId = req.user.id;
   try {
     const createdProduct = await createProduct(productData);
-    console.log(createdProduct);
     if (createdProduct) {
       res.send(createdProduct);
     } else {
@@ -90,10 +89,9 @@ router.delete("/:productId", requireUser, async (req, res, next) => {
   }
 });
 
-router.get("/products/:username", async (req, res, next) => {
-  const username = req.params.username;
+router.get("/products/:username/:pageNumber", async (req, res, next) => {
+  const { pageNumber, username } = req.params;
   const user = await getUsersByUsername(username);
-  console.log(user);
   const userId = user.id;
   try {
     const product = await getProductsByUser(userId);
@@ -104,7 +102,12 @@ router.get("/products/:username", async (req, res, next) => {
         message: `product not found`,
       });
     } else {
-      res.send(product);
+      front = (pageNumber - 1) * 25;
+      back = pageNumber * 25;
+  
+      const productPage = products.slice(front, back);
+  
+      res.send(productPage);
     }
   } catch ({ name, message }) {
     next({ name, message });
