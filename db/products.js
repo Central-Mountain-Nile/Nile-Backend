@@ -38,13 +38,14 @@ async function createProduct({
 
 async function getProductById(id) {
   try {
+    console.log(id);
     const {
       rows: [products],
     } = await client.query(
       `
         SELECT *
         FROM products
-        WHERE id = ${id}
+        WHERE id = ${id};
         `
     );
     return products;
@@ -125,11 +126,10 @@ async function editProduct({ id, ...fields }) {
     throw error;
   }
 }
+
 async function getProductsByUser(user_id) {
   try {
-    const {
-      rows,
-    } = await client.query(
+    const { rows } = await client.query(
       `
           SELECT *
           FROM products

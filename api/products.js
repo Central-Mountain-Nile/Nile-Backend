@@ -10,6 +10,7 @@ const {
   getProductsByCategory,
   deleteProducts,
   getAllProducts,
+  getUsersByUsername,
 } = require("../db/");
 
 // GET /api/products
@@ -27,7 +28,6 @@ router.get("/", requireUser, async (req, res, next) => {
 
 router.post("/", requireUser, async (req, res, next) => {
   const productData = {
-    creatorId: req.body.id,
     categoryId: req.body.isPublic,
     name: req.body.name,
     description: req.body.description,
@@ -35,10 +35,17 @@ router.post("/", requireUser, async (req, res, next) => {
     quantity: req.body.quantity,
     imgURL: req.body.imgURL,
   };
+  productData.creatorId = req.user.id;
   try {
     const createdProduct = await createProduct(productData);
+    console.log(createdProduct);
     if (createdProduct) {
       res.send(createdProduct);
+    } else {
+      next({
+        name: "ProductError",
+        message: "Product is already created",
+      });
     }
   } catch (error) {
     next({
@@ -48,21 +55,10 @@ router.post("/", requireUser, async (req, res, next) => {
   }
 });
 
-router.get("/:productId", requireUser, async (req, res, next) => {
-  const { productId } = req.params;
-  try {
-    const product = await getProductById(productId);
-    res.send(product);
-  } catch (error) {
-    next({
-      message: "Could not find this product",
-    });
-  }
-});
-
 router.patch("/:productId", requireUser, async (req, res, next) => {
+  const { productId } = req.params;
   const productData = {
-    creatorId: req.body.id,
+    // creatorId: req.user.id,
     categoryId: req.body.categoryId,
     name: req.body.name,
     description: req.body.description,
@@ -71,9 +67,9 @@ router.patch("/:productId", requireUser, async (req, res, next) => {
     imgURL: req.body.imgURL,
   };
   try {
-    if (productData.creatorId === req.user.id) {
-      console.log("!!!!!!!");
-      const result = await editProduct(productData);
+    const product = await getProductById(productId);
+    if (product.creatorId === req.user.id) {
+      const result = await editProduct({ id: productId, ...productData });
       res.send(result);
     } else {
       next({
@@ -107,8 +103,11 @@ router.delete("/:productId", requireUser, async (req, res, next) => {
   }
 });
 
-router.get("/products", requireUser, async (req, res, next) => {
-  const userId = req.user.id;
+router.get("/products/:username", async (req, res, next) => {
+  const username = req.params.username;
+  const user = await getUsersByUsername(username);
+  console.log(user);
+  const userId = user.id;
   try {
     const product = await getProductsByUser(userId);
 
@@ -125,7 +124,25 @@ router.get("/products", requireUser, async (req, res, next) => {
   }
 });
 
-router.get("/categoryId", requireUser, async (req, res, next) => {
+router.get("/:productId", async (req, res, next) => {
+  const { productId } = req.params;
+  try {
+    const product = await getProductById(productId);
+    if (!product) {
+      next({
+        name: "productError",
+        message: "product do not exist",
+      });
+    }
+    res.send(product);
+  } catch (error) {
+    next({
+      message: "Could not find this product",
+    });
+  }
+});
+
+router.get("/:categoryId", requireUser, async (req, res, next) => {
   const categoryId = req.user.id;
   try {
     const category = await getProductsByCategory(categoryId);
