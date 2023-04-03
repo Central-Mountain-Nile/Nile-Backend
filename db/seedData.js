@@ -180,7 +180,7 @@ async function createInitialUsers() {
   console.log("Starting to create users...");
   try {
     let usersToCreate = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 100; i++) {
       const firstName = makeid(10);
       const lastName = makeid(10);
       const username = makeid(9);
@@ -240,7 +240,7 @@ async function createInitialCategories() {
 async function createInitialProducts() {
   console.log("Starting to create products...");
   let productsToCreate = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 50; i++) {
     const creatorId = Math.floor(Math.random() * (users.length - 1)) + 1;
     const categoryId = Math.floor(Math.random() * (categories.length - 1)) + 1;
     const name = "testProduct" + i;

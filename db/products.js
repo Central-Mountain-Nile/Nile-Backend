@@ -70,16 +70,17 @@ async function getAllProducts() {
 
 async function getProductsByCategory(categoryId) {
   try {
+    console.log(categoryId)
     const {
       rows: [products],
     } = await client.query(
       `
         SELECT *
         FROM products
-        WHERE "categoryId" = $1;
-        `,
-      [categoryId]
+        WHERE "categoryId"=${categoryId};
+        `
     );
+    console.log(rows)
     return rows;
   } catch (error) {
     throw error;
