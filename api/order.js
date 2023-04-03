@@ -28,10 +28,9 @@ router.get("/", async (req, res, next) => {
 
 //POST /api/order
 router.post("/", requireUser, async (req, res, next) => {
-  const { orderId, total, orderItemData, orderPaymentData } = req.body;
+  const {  total, orderItemData, orderPaymentData } = req.body;
   const orderData = {
-    orderId: req.user.id,
-    userId,
+    userId: req.user.id,
     total,
   };
   try {

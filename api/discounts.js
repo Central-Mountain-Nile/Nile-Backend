@@ -124,3 +124,4 @@ router.delete("/:productId", requireUser, async (req, res, next) => {
 });
 
 module.exports = router;
+

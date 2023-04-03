@@ -13,6 +13,7 @@ const {
   createUser,
   createDiscount,
   createOrder,
+  getDiscountsByProduct
 } = require("./");
 
 function makeid(length) {
@@ -357,7 +358,6 @@ async function createInitialOrderHistory() {
         const myCart = await getCart(users[i].id);
         const myCartItems = await getCartItems(users[i].id);
         let total = 0;
-
         for (let j = 0; j < myCartItems.length; j++) {
           mypId = myCartItems[j].productId;
           myDiscount = await getDiscountsByProduct({ productId: mypId });
@@ -365,7 +365,7 @@ async function createInitialOrderHistory() {
           myDiscountNumber = myDiscount[0].discountPercent;
           total = total + (myDiscountNumber / 100) * price;
         }
-
+        console.log('hit')
         total = total * 100;
         total = Math.floor(total);
         total = total / 100;

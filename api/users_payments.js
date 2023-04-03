@@ -12,6 +12,8 @@ const jwt = require("jsonwebtoken");
 
 // GET /api/user_payments
 router.get("/", async (req, res, next) => {
+  const { userId } = req.body;
+
   try {
     const getPayments = await getPaymentByUser(userId);
     const payment = getPayments.filter((payment) => {
@@ -26,13 +28,14 @@ router.get("/", async (req, res, next) => {
 
 // POST /api/users_payments
 router.post("/", requireUser, async (req, res, next) => {
-  const { paymentType, provider, accountNo = "" } = req.body;
+  const { paymentType, provider, accountNo, expire } = req.body;
 
   const paymentData = {
-    paymentId: req.user.id,
+    userId: req.user.id,
     paymentType,
     provider,
     accountNo,
+    expire,
   };
 
   try {
@@ -58,6 +61,7 @@ router.patch("/:paymentId", requireUser, async (req, res, next) => {
   try {
     const { paymentId } = req.params;
     const getPaymentId = await getPaymentById(paymentId);
+
     if (!getPaymentId) {
       next({
         name: "PaymentNotFound",
