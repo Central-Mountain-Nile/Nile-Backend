@@ -61,7 +61,7 @@ router.patch("/:paymentId", requireUser, async (req, res, next) => {
   try {
     const { paymentId } = req.params;
     const getPaymentId = await getPaymentById(paymentId);
-    console.log("hit");
+
     if (!getPaymentId) {
       next({
         name: "PaymentNotFound",
