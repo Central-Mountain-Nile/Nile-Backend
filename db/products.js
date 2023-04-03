@@ -38,7 +38,6 @@ async function createProduct({
 
 async function getProductById(id) {
   try {
-    console.log(id);
     const {
       rows: [products],
     } = await client.query(
@@ -81,7 +80,6 @@ async function getProductsByCategory(categoryId) {
         `,
       [categoryId]
     );
-    console.log(products);
     return rows;
   } catch (error) {
     throw error;
@@ -100,7 +98,6 @@ async function deleteProducts(productId) {
     );
     return rows;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -122,7 +119,6 @@ async function editProduct({ id, ...fields }) {
     }
     return await getProductById(id);
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -139,12 +135,31 @@ async function getProductsByUser(user_id) {
     );
     return rows;
   } catch (error) {
-    console.log(error);
     throw {
       name: "ProductNotFoundError",
       message: "Could not find products with this userId",
     };
   }
+}
+
+async function lowerQuantity(id, amount) {
+const product = await getProductById(id)
+const newQuantity = product.quantity - amount
+console.log(amount)
+  try {
+      await client.query(
+        `
+              UPDATE products
+              SET quantity=${newQuantity}
+              WHERE id=${id};
+            `
+      );
+    
+    return await getProductById(id);
+  } catch (error) {
+    throw error;
+  }
+
 }
 module.exports = {
   createProduct,
@@ -154,4 +169,5 @@ module.exports = {
   getProductsByCategory,
   deleteProducts,
   getAllProducts,
+  lowerQuantity
 };

@@ -25,7 +25,6 @@ router.use(async (req, res, next) => {
       const { id } = jwt.verify(token, JWT_SECRET);
       if (id) {
         req.user = await getUsersById(id);
-        console.log("hello");
         next();
       }
     } catch ({ name, message }) {

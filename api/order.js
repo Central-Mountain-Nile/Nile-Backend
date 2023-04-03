@@ -8,6 +8,13 @@ const {
   deleteOrder,
   createOrderItems,
   createOrderPayment,
+  getCart,
+  getCartItems,
+  getPaymentByUser,
+  getPaymentById,
+  clearCart,
+  lowerQuantity,
+  getProductById,
 } = require("../db");
 const { requireUser } = require("./utils");
 const router = express.Router();
@@ -25,14 +32,35 @@ router.get("/", async (req, res, next) => {
     next({ name, message });
   }
 });
-
+// total, orderItemData,
 //POST /api/order
 router.post("/", requireUser, async (req, res, next) => {
-  const {  total, orderItemData, orderPaymentData } = req.body;
+  const {userPaymentId } = req.body;
+  const cart = await getCart(req.user.id)
+  const cartItems = await getCartItems(req.user.id);
+  if (cartItems.length === 0) {//check if the cart is empty
+    next({ name: "orderError", message: "the cart has no items in it" });
+    return
+  }
+  let total = 0;
+  for(let i = 0; i < cartItems.length; i ++){
+    total = total + Number(cartItems[i].price)
+  }
   const orderData = {
     userId: req.user.id,
     total,
   };
+  //check that the products have enough quantity else go next
+  for(let i = 0; i < cartItems.length; i++){
+    const product = await getProductById(cartItems[i].productId)
+    console.log(cartItems[i].quantity, product.quantity)
+    if(cartItems[i].quantity > product.quantity){
+      next({name:"orderError",message:`not enough of ${product.name} left in stock`})
+      return;
+    }
+
+
+  }
   try {
     const order = await createOrder(orderData);
     if (!order) {
@@ -40,19 +68,31 @@ router.post("/", requireUser, async (req, res, next) => {
         name: "OrderCreationError",
         message: "Invalid Order",
       });
+      return;
     }
-    const orderPayment = await createOrderPayment({orderId:order.id,...orderPaymentData});
+    const userPayment = await getPaymentById(userPaymentId)
+    const orderPayment = await createOrderPayment({
+      orderId: order.id,
+      provider: userPayment.provider,
+      status:"good"
+    });
     order.payment = orderPayment;
-    let orders = [];
-    for (let i = 0; i < orderItems.length; i++) {
-      const orderItem = await createOrderItems({orderId:order.id,...orderItemData[i]});
-      orders.push(orderItem);
-    }
-    order.item = orders;
+     let orders = [];
+     for (let i = 0; i < cartItems.length; i++) {
+       const orderItem = await createOrderItems({
+         orderId: order.id,
+         productId: cartItems[i].productId,
+         quantity: cartItems[i].quantity
+       });
+       orders.push(orderItem);
+       await lowerQuantity(cartItems[i].productId,cartItems[i].quantity)
+     }
+     order.item = orders;
+     const clear = await clearCart(cart.id)
 
     res.send(order);
   } catch ({ name, message }) {
-    next({ name, message: `Order ID: ${orders.id} already exists!` });
+    next({ name:"orderError", message: `problem with orders` });
   }
 });
 
