@@ -31,7 +31,7 @@ router.post("/", requireUser, async (req, res, next) => {
   const { paymentType, provider, accountNo, expire } = req.body;
 
   const paymentData = {
-    paymentId: req.user.id,
+    userId: req.user.id,
     paymentType,
     provider,
     accountNo,
@@ -61,7 +61,7 @@ router.patch("/:paymentId", requireUser, async (req, res, next) => {
   try {
     const { paymentId } = req.params;
     const getPaymentId = await getPaymentById(paymentId);
-    console.log("hit");
+
     if (!getPaymentId) {
       next({
         name: "PaymentNotFound",
