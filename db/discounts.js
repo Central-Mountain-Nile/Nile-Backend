@@ -91,7 +91,7 @@ async function deleteDiscounts(discountId) {
     const { rows } = await client.query(
       `
         UPDATE discounts
-        SET boolean active = false
+        SET active = false
         WHERE id = $1
         RETURNING *;
         `,
