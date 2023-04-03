@@ -67,12 +67,10 @@ async function getAllProducts() {
     throw error;
   }
 }
-
 async function getProductsByCategory(categoryId) {
   try {
-    console.log(categoryId)
     const {
-      rows: [products],
+      rows,
     } = await client.query(
       `
         SELECT *
@@ -80,7 +78,6 @@ async function getProductsByCategory(categoryId) {
         WHERE "categoryId"=${categoryId};
         `
     );
-    console.log(rows)
     return rows;
   } catch (error) {
     throw error;

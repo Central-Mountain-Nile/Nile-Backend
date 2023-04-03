@@ -129,51 +129,65 @@ router.get("/product/:productId", async (req, res, next) => {
   }
 });
 
-router.get(
-  "/category/:categoryId/:pageNumber/",
-  async (req, res, next) => {
-
-    const { pageNumber, categoryId } = req.params;
-    const {searchTerm} = req.body
-    try {
-      const products = await getProductsByCategory(categoryId);
-      console.log('hit0')
-      if (!category) {
-        next({
-          name: "DoesNotExist",
-          message: `product not found`,
-        });
-        return;
-      }
-      console.log('hit1')
-      if (searchTerm) {
-        const newProducts = [];
-        for (let i = 0; i < products.length; i++) {
-          if (products[i].name.toLowerCase().includes(str.toLowerCase())) {
-            //if the name includes the search term
-            newProducts.push(products[i]);
-          }
+router.get("/category/:categoryId/:pageNumber/", async (req, res, next) => {
+  const { pageNumber, categoryId } = req.params;
+  const { searchTerm } = req.body;
+  try {
+    let products = await getProductsByCategory(categoryId);
+    if (!products) {
+      next({
+        name: "DoesNotExist",
+        message: `product not found`,
+      });
+      return;
+    }
+    if (searchTerm) {
+      const newProducts = [];
+      for (let i = 0; i < products.length; i++) {
+        if (products[i].name.toLowerCase().includes(searchTerm.toLowerCase())) {
+          //if the name includes the search term
+          newProducts.push(products[i]);
         }
-        console.log('hit2')
-        products = newProducts;
       }
-      console.log('hit3')
-      productPage = products.slice((pageNumber - 1) * 25, pageNumber * 25);
+      products = newProducts;
+    }
+    front = (pageNumber - 1) * 25;
+    back = pageNumber * 25;
 
-      res.send(productPage);
-    } catch (error) {}
+    const productPage = products.slice(front, back);
+
+    res.send(productPage);
+  } catch (error) {
+    throw error;
   }
-);
+});
 
 // GET /api/products/pageNumber
-router.get("/:pageNumber/:searchTerm", requireUser, async (req, res, next) => {
+router.get("/:pageNumber", async (req, res, next) => {
   try {
-    const products = await getAllProducts();
-    res.send(products);
+    const { pageNumber } = req.params;
+    const { searchTerm } = req.body;
+    let products = await getAllProducts();
+    if (searchTerm) {
+      const newProducts = [];
+      for (let i = 0; i < products.length; i++) {
+        if (products[i].name.toLowerCase().includes(searchTerm.toLowerCase())) {
+          //if the name includes the search term
+          newProducts.push(products[i]);
+        }
+      }
+      products = newProducts;
+    }
+    front = (pageNumber - 1) * 25;
+    back = pageNumber * 25;
+
+    const productPage = products.slice(front, back);
+
+    res.send(productPage);
   } catch (error) {
     next({
       name: "productsError",
-      message: "Something went wrong",
+      message: error,
     });
   }
 });
