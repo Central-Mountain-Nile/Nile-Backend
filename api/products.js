@@ -13,19 +13,6 @@ const {
   getUsersByUsername,
 } = require("../db/");
 
-// GET /api/products
-router.get("/", requireUser, async (req, res, next) => {
-  try {
-    const products = await getAllProducts();
-    res.send(products);
-  } catch (error) {
-    next({
-      name: "productsError",
-      message: "Something went wrong",
-    });
-  }
-});
-
 router.post("/", requireUser, async (req, res, next) => {
   const productData = {
     categoryId: req.body.isPublic,
@@ -124,7 +111,7 @@ router.get("/products/:username", async (req, res, next) => {
   }
 });
 
-router.get("/:productId", async (req, res, next) => {
+router.get("/product/:productId", async (req, res, next) => {
   const { productId } = req.params;
   try {
     const product = await getProductById(productId);
@@ -142,20 +129,52 @@ router.get("/:productId", async (req, res, next) => {
   }
 });
 
-router.get("/:categoryId", requireUser, async (req, res, next) => {
-  const categoryId = req.user.id;
+router.get(
+  "/category/:categoryId/:pageNumber/",
+  async (req, res, next) => {
+
+    const { pageNumber, categoryId } = req.params;
+    const {searchTerm} = req.body
+    try {
+      const products = await getProductsByCategory(categoryId);
+      console.log('hit0')
+      if (!category) {
+        next({
+          name: "DoesNotExist",
+          message: `product not found`,
+        });
+        return;
+      }
+      console.log('hit1')
+      if (searchTerm) {
+        const newProducts = [];
+        for (let i = 0; i < products.length; i++) {
+          if (products[i].name.toLowerCase().includes(str.toLowerCase())) {
+            //if the name includes the search term
+            newProducts.push(products[i]);
+          }
+        }
+        console.log('hit2')
+        products = newProducts;
+      }
+      console.log('hit3')
+      productPage = products.slice((pageNumber - 1) * 25, pageNumber * 25);
+
+      res.send(productPage);
+    } catch (error) {}
+  }
+);
+
+// GET /api/products/pageNumber
+router.get("/:pageNumber/:searchTerm", requireUser, async (req, res, next) => {
   try {
-    const category = await getProductsByCategory(categoryId);
-
-    if (!category) {
-      next({
-        name: "DoesNotExist",
-        message: `product not found`,
-      });
-    } else {
-      res.send(category);
-    }
-  } catch (error) {}
+    const products = await getAllProducts();
+    res.send(products);
+  } catch (error) {
+    next({
+      name: "productsError",
+      message: "Something went wrong",
+    });
+  }
 });
-
 module.exports = router;
