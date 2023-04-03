@@ -167,7 +167,7 @@ router.get("/:pageNumber", async (req, res, next) => {
   try {
     const { pageNumber } = req.params;
     const { searchTerm } = req.body;
-    const products = await getAllProducts();
+    let products = await getAllProducts();
     if (searchTerm) {
       const newProducts = [];
       for (let i = 0; i < products.length; i++) {
@@ -187,7 +187,7 @@ router.get("/:pageNumber", async (req, res, next) => {
   } catch (error) {
     next({
       name: "productsError",
-      message: "Something went wrong",
+      message: error,
     });
   }
 });
