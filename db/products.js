@@ -91,7 +91,7 @@ async function deleteProducts(productId) {
     const { rows } = await client.query(
       `
         UPDATE products
-        SET boolean active = false
+        SET active = false
         WHERE id = $1
         RETURNING *;
         `,
@@ -133,7 +133,7 @@ async function getProductsByUser(user_id) {
       `
           SELECT *
           FROM products
-          WHERE "userId" = $1;
+          WHERE "creatorId" = $1;
           `,
       [user_id]
     );

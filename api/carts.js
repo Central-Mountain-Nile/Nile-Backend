@@ -36,7 +36,7 @@ cartRouter.post("/", requireUser, async (req, res, next) => {
 
   try {
     const cart = await getCart(req.user.id);
-
+    console.log(quantity)
     const cartItem = await addToCart({ productId, cartId: cart.id, quantity });
     res.send(cartItem);
   } catch (error) {
@@ -94,7 +94,7 @@ cartRouter.patch("/", requireUser, async (req, res, next) => {
       }
     }
     next({
-      name: "remove from cart Error",
+      name: " cart Error",
       message: "selected Item is not in cart",
     });
   } catch (e) {
