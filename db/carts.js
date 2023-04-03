@@ -38,7 +38,7 @@ async function getCartItems(userId) {
       rows,
     } = await client.query(
       `
-      SELECT carts.*, cart_items.*, products.quantity, products.price, products.active
+      SELECT carts.*, cart_items.*, products.quantity AS "remainingQuantity", products.price, products.active
       FROM carts
       JOIN cart_items 
       ON carts.id=cart_items."cartId"
