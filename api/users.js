@@ -1,5 +1,5 @@
 const express = require("express");
-const { getUsersByUsername, createUser } = require("../db");
+const { getUsersByUsername, createUser, makeStore } = require("../db");
 const { requireUser } = require("./utils");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
@@ -111,4 +111,14 @@ router.get("/me", requireUser, async (req, res, next) => {
   }
 });
 
+//become store
+router.patch("/store", requireUser, async (req,res,next)=>{
+  try{
+    const user = await makeStore(req.user.id)
+    res.send(user)
+  }catch(error){
+    throw error
+  }
+
+})
 module.exports = router;
