@@ -1,5 +1,5 @@
 const express = require("express");
-const { requireUser } = require("./utils");
+const { requireUser, requireStore } = require("./utils");
 
 const router = express.Router();
 const {
@@ -13,7 +13,7 @@ const {
   getUsersByUsername,
 } = require("../db/");
 
-router.post("/", requireUser, async (req, res, next) => {
+router.post("/", requireUser, requireStore, async (req, res, next) => {
   const productData = {
     categoryId: req.body.isPublic,
     name: req.body.name,
@@ -41,7 +41,7 @@ router.post("/", requireUser, async (req, res, next) => {
   }
 });
 
-router.patch("/:productId", requireUser, async (req, res, next) => {
+router.patch("/:productId", requireUser, requireStore, async (req, res, next) => {
   const { productId } = req.params;
   const productData = {
     categoryId: req.body.categoryId,
@@ -70,14 +70,17 @@ router.patch("/:productId", requireUser, async (req, res, next) => {
   }
 });
 
-router.delete("/:productId", requireUser, async (req, res, next) => {
+router.delete("/:productId", requireUser, requireStore, async (req, res, next) => {
   try {
     const { productId } = req.params;
     const product = await getProductById(productId);
-    if (!product) {
+    if(!product){
+      next({name:"productError",message:`product ${productId} des not exist`})
+  }
+    if (product.creatorId !== req.user.id) {
       next({
         name: "Deletion Error",
-        message: "Error deleting product",
+        message: `product ${productId} does not belong to ${req.user.username} `,
       });
     } else {
       const deletedProduct = await deleteProducts(productId);

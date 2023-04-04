@@ -170,6 +170,40 @@ async function deleteUsers(usersId) {
     throw error;
   }
 }
+async function makeStore(usersId){
+  try {
+
+      await client.query(
+        `
+            UPDATE users
+            SET isStore=true
+            WHERE id=${usersId}
+            RETURNING *;
+          `
+      );
+    return await getUsersById(usersId);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+async function makeAdmin(usersId,secretCode){
+  try {
+    if(secretCode ===  process.env.SECRET_CODE)
+    await client.query(
+      `
+          UPDATE users
+          SET isAdmin=true
+          WHERE id=${usersId}
+          RETURNING *;
+        `
+    );
+  return await getUsersById(usersId);
+} catch (error) {
+  console.log(error);
+  throw error;
+}
+}
 module.exports = {
   createUser,
   getUser,
@@ -177,5 +211,6 @@ module.exports = {
   getUsersByUsername,
   patchUsers,
   deleteUsers,
-  getAllUsers,
+  makeStore,
+  makeAdmin
 };
