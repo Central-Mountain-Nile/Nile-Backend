@@ -69,6 +69,26 @@ async function getUsersByUsername(username) {
     throw error;
   }
 }
+async function getAllUsers() {
+  try {
+    const {
+      rows: [user],
+    } = await client.query(
+      `
+      SELECT * 
+      FROM users;
+    `,
+      [username]
+    );
+    if (password === user.password) {
+      delete user.password;
+      return user;
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 async function getUsersById(usersId) {
   try {
     const {
