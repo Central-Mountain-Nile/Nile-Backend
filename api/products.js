@@ -25,7 +25,6 @@ router.post("/", requireUser, async (req, res, next) => {
   productData.creatorId = req.user.id;
   try {
     const createdProduct = await createProduct(productData);
-    console.log(createdProduct);
     if (createdProduct) {
       res.send(createdProduct);
     } else {
@@ -45,7 +44,6 @@ router.post("/", requireUser, async (req, res, next) => {
 router.patch("/:productId", requireUser, async (req, res, next) => {
   const { productId } = req.params;
   const productData = {
-    // creatorId: req.user.id,
     categoryId: req.body.categoryId,
     name: req.body.name,
     description: req.body.description,
@@ -90,10 +88,9 @@ router.delete("/:productId", requireUser, async (req, res, next) => {
   }
 });
 
-router.get("/products/:username", async (req, res, next) => {
-  const username = req.params.username;
+router.get("/products/user/:username/:pageNumber", async (req, res, next) => {
+  const { pageNumber, username } = req.params;
   const user = await getUsersByUsername(username);
-  console.log(user);
   const userId = user.id;
   try {
     const product = await getProductsByUser(userId);
@@ -104,7 +101,12 @@ router.get("/products/:username", async (req, res, next) => {
         message: `product not found`,
       });
     } else {
-      res.send(product);
+      front = (pageNumber - 1) * 25;
+      back = pageNumber * 25;
+
+      const productPage = products.slice(front, back);
+
+      res.send(productPage);
     }
   } catch ({ name, message }) {
     next({ name, message });
@@ -129,9 +131,8 @@ router.get("/product/:productId", async (req, res, next) => {
   }
 });
 
-router.get("/category/:categoryId/:pageNumber/", async (req, res, next) => {
+router.get("/category/:categoryId/:pageNumber", async (req, res, next) => {
   const { pageNumber, categoryId } = req.params;
-  const { searchTerm } = req.body;
   try {
     let products = await getProductsByCategory(categoryId);
     if (!products) {
@@ -140,16 +141,6 @@ router.get("/category/:categoryId/:pageNumber/", async (req, res, next) => {
         message: `product not found`,
       });
       return;
-    }
-    if (searchTerm) {
-      const newProducts = [];
-      for (let i = 0; i < products.length; i++) {
-        if (products[i].name.toLowerCase().includes(searchTerm.toLowerCase())) {
-          //if the name includes the search term
-          newProducts.push(products[i]);
-        }
-      }
-      products = newProducts;
     }
     front = (pageNumber - 1) * 25;
     back = pageNumber * 25;
@@ -162,11 +153,63 @@ router.get("/category/:categoryId/:pageNumber/", async (req, res, next) => {
   }
 });
 
+router.get(
+  "/category/:categoryId/:pageNumber/:searchTerm",
+  async (req, res, next) => {
+    const { pageNumber, categoryId, searchTerm } = req.params;
+    try {
+      let products = await getProductsByCategory(categoryId);
+      if (!products) {
+        next({
+          name: "DoesNotExist",
+          message: `product not found`,
+        });
+        return;
+      }
+      if (searchTerm) {
+        const newProducts = [];
+        for (let i = 0; i < products.length; i++) {
+          if (
+            products[i].name.toLowerCase().includes(searchTerm.toLowerCase())
+          ) {
+            //if the name includes the search term
+            newProducts.push(products[i]);
+          }
+        }
+        products = newProducts;
+      }
+      front = (pageNumber - 1) * 25;
+      back = pageNumber * 25;
+
+      const productPage = products.slice(front, back);
+
+      res.send(productPage);
+    } catch (error) {
+      throw error;
+    }
+  }
+);
 // GET /api/products/pageNumber
 router.get("/:pageNumber", async (req, res, next) => {
   try {
     const { pageNumber } = req.params;
-    const { searchTerm } = req.body;
+    let products = await getAllProducts();
+    front = (pageNumber - 1) * 25;
+    back = pageNumber * 25;
+
+    const productPage = products.slice(front, back);
+
+    res.send(productPage);
+  } catch (error) {
+    next({
+      name: "productsError",
+      message: error,
+    });
+  }
+});
+router.get("/:pageNumber/:searchTerm", async (req, res, next) => {
+  try {
+    const { pageNumber, searchTerm } = req.params;
     let products = await getAllProducts();
     if (searchTerm) {
       const newProducts = [];

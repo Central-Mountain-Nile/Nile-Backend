@@ -14,10 +14,8 @@ cartRouter.get("/", requireUser, async (req, res, next) => {
   try {
     //uses the check login to make sure that user exists
     const userId = req.user.id;
-    console.log;
     const cart = await getCart(userId);
     const cartItems = await getCartItems(userId);
-    console.log(cartItems);
     cart.cartItems = cartItems;
     res.send(cart);
   } catch (e) {
@@ -36,7 +34,6 @@ cartRouter.post("/", requireUser, async (req, res, next) => {
 
   try {
     const cart = await getCart(req.user.id);
-    console.log(quantity)
     const cartItem = await addToCart({ productId, cartId: cart.id, quantity });
     res.send(cartItem);
   } catch (error) {

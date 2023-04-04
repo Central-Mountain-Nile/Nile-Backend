@@ -69,7 +69,7 @@ router.patch("/:paymentId", requireUser, async (req, res, next) => {
       });
     } else {
       const { paymentType, provider, accountNo } = req.body;
-      try {
+
         const updatedPayment = await patchPayment({
           id: paymentId,
           paymentType,
@@ -77,16 +77,9 @@ router.patch("/:paymentId", requireUser, async (req, res, next) => {
           accountNo,
         });
         res.send(updatedPayment);
-      } catch (error) {
-        next({
-          name: "",
-          message: `An payment with ID ${paymentId} already exists`,
-        });
-        console.log(error);
-      }
     }
   } catch (error) {
-    console.log(error);
+    throw error
   }
 });
 
