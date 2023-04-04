@@ -62,4 +62,6 @@ router.use("/users_payments", users_paymentsRouter);
 const discountsRouter = require("./discounts");
 router.use("/discounts", discountsRouter);
 
+const AdminRouter = require("./admin");
+router.use("/admin", AdminRouter);
 module.exports = router;

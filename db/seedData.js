@@ -81,6 +81,7 @@ async function createTables() {
         password varchar(255) NOT NULL,
         "isActive" boolean DEFAULT TRUE,
         "isAdmin" boolean DEFAULT FALSE,
+        "isStore" boolean DEFAULT FALSE,
         email VARCHAR(255) UNIQUE NOT NULL,
         "addressLineOne" VARCHAR(255) NOT NULL,
         "addressLineTwo" VARCHAR(255),
