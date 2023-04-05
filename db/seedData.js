@@ -248,7 +248,7 @@ async function createInitialProducts() {
     const description = "initial product " + i;
     const price = Math.floor(Math.random() * 100000) / 100;
     const quantity = Math.floor(Math.random() * 500 + 1);
-    const imgURL = "insert default url";
+    const imgURL = "http://placeimg.com/640/480/nature";
     productsToCreate.push({
       creatorId,
       categoryId,
