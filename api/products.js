@@ -97,7 +97,7 @@ router.get("/products/user/:username/:pageNumber", async (req, res, next) => {
   const userId = user.id;
   try {
     const product = await getProductsByUser(userId);
-
+    const count = product.length
     if (!product) {
       next({
         name: "DoesNotExist",
@@ -108,8 +108,8 @@ router.get("/products/user/:username/:pageNumber", async (req, res, next) => {
       back = pageNumber * 25;
 
       const productPage = products.slice(front, back);
-
-      res.send(productPage);
+      const result = {products:productPage,length:count}
+      res.send(result);
     }
   } catch ({ name, message }) {
     next({ name, message });
@@ -149,8 +149,8 @@ router.get("/category/:categoryId/:pageNumber", async (req, res, next) => {
     back = pageNumber * 25;
 
     const productPage = products.slice(front, back);
-
-    res.send(productPage);
+    const result = {products:productPage,length:count}
+    res.send(result);
   } catch (error) {
     throw error;
   }
@@ -186,7 +186,8 @@ router.get(
 
       const productPage = products.slice(front, back);
 
-      res.send(productPage);
+      const result = {products:productPage,length:count}
+      res.send(result);
     } catch (error) {
       throw error;
     }
@@ -202,7 +203,8 @@ router.get("/:pageNumber", async (req, res, next) => {
 
     const productPage = products.slice(front, back);
 
-    res.send(productPage);
+    const result = {products:productPage,length:count}
+    res.send(result);
   } catch (error) {
     next({
       name: "productsError",
@@ -228,8 +230,8 @@ router.get("/:pageNumber/:searchTerm", async (req, res, next) => {
     back = pageNumber * 25;
 
     const productPage = products.slice(front, back);
-
-    res.send(productPage);
+    const result = {products:productPage,length:count}
+    res.send(result);
   } catch (error) {
     next({
       name: "productsError",
