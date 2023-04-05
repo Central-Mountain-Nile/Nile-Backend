@@ -21,12 +21,13 @@ router.post("/register", async (req, res, next) => {
   } = req.body;
   try {
     const _user = await getUsersByUsername(username);
-
+console.log(req.body)
     if (_user) {
       next({
         name: "UserExistsError",
         message: `User ${username} is already taken.`,
       });
+      return
     }
 
     if (password.length < 8) {
@@ -34,6 +35,7 @@ router.post("/register", async (req, res, next) => {
         name: "PasswordError",
         message: "Password Too Short!",
       });
+      return
     }
     const user = await createUser({
       firstName,
