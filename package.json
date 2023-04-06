@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "proxy": "<http://localhost:4242>",
   "scripts": {
     "seed:dev": "nodemon ./db/seed.js",
     "start:dev": "nodemon server.js",

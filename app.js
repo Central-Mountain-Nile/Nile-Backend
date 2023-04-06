@@ -5,6 +5,7 @@ const apiRouter = require("./api/index");
 const morgan = require("morgan");
 const cors = require("cors");
 const { resolve } = require("path");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // const env = require("dotenv").config({ path: "./.env" });
 
@@ -49,9 +50,22 @@ app.post("/create-payment-intent", async (req, res) => {
   }
 });
 
-app.listen(5252, () =>
-  console.log(`Node server listening at http://localhost:5252`)
-);
+app.post("/create-checkout-session", async (req, res) => {
+  const session = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+        price: "{{PRICE_ID}}",
+        quantity: 1,
+      },
+    ],
+    mode: "payment",
+    success_url: `http://localhost:8080?success=true`,
+    cancel_url: `http://localhost:8080?canceled=true`,
+  });
+
+  res.redirect(303, session.url);
+});
 
 app.get("*", (req, res) => {
   res.status(404).send({
