@@ -96,9 +96,8 @@ router.get("/products/user/:username/:pageNumber", async (req, res, next) => {
   const user = await getUsersByUsername(username);
   const userId = user.id;
   try {
-    const product = await getProductsByUser(userId);
-
-    if (!product) {
+    const products = await getProductsByUser(userId);
+    if (!products) {
       next({
         name: "DoesNotExist",
         message: `product not found`,
@@ -108,8 +107,9 @@ router.get("/products/user/:username/:pageNumber", async (req, res, next) => {
       back = pageNumber * 25;
 
       const productPage = products.slice(front, back);
-
-      res.send(productPage);
+      const count = products.length
+      const result = {products:productPage,count}
+      res.send(result);
     }
   } catch ({ name, message }) {
     next({ name, message });
@@ -149,8 +149,9 @@ router.get("/category/:categoryId/:pageNumber", async (req, res, next) => {
     back = pageNumber * 25;
 
     const productPage = products.slice(front, back);
-
-    res.send(productPage);
+    const count = products.length
+    const result = {products:productPage,count}
+    res.send(result);
   } catch (error) {
     throw error;
   }
@@ -185,8 +186,9 @@ router.get(
       back = pageNumber * 25;
 
       const productPage = products.slice(front, back);
-
-      res.send(productPage);
+      const count = products.length
+      const result = {products:productPage,count}
+      res.send(result);
     } catch (error) {
       throw error;
     }
@@ -195,14 +197,16 @@ router.get(
 // GET /api/products/pageNumber
 router.get("/:pageNumber", async (req, res, next) => {
   try {
+
     const { pageNumber } = req.params;
     let products = await getAllProducts();
     front = (pageNumber - 1) * 25;
     back = pageNumber * 25;
 
     const productPage = products.slice(front, back);
-
-    res.send(productPage);
+    const count = products.length
+    const result = {products:productPage,count}
+    res.send(result);
   } catch (error) {
     next({
       name: "productsError",
@@ -228,8 +232,9 @@ router.get("/:pageNumber/:searchTerm", async (req, res, next) => {
     back = pageNumber * 25;
 
     const productPage = products.slice(front, back);
-
-    res.send(productPage);
+    const count = products.length
+    const result = {products:productPage,count}
+    res.send(result);
   } catch (error) {
     next({
       name: "productsError",
