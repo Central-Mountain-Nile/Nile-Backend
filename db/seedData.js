@@ -366,7 +366,6 @@ async function createInitialOrderHistory() {
           myDiscountNumber = myDiscount[0].discountPercent;
           total = total + (myDiscountNumber / 100) * price;
         }
-        console.log('hit')
         total = total * 100;
         total = Math.floor(total);
         total = total / 100;
