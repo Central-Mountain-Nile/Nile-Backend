@@ -10,7 +10,17 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 // const env = require("dotenv").config({ path: "./.env" });
 
 app.use(cors());
-app.use(express.json());
+app.use(
+  express.json({
+    // We need the raw body to verify webhook signatures.
+    // Let's compute it only when hitting the Stripe webhook endpoint.
+    verify: function(req, res, buf) {
+      if (req.originalUrl.startsWith('/webhook')) {
+        req.rawBody = buf.toString();
+      }
+    }
+  })
+);
 
 app.use(morgan("dev"));
 
@@ -51,11 +61,12 @@ app.post("/create-payment-intent", async (req, res) => {
 });
 
 app.post("/create-checkout-session", async (req, res) => {
+  console.log('hit')
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
         // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-        price: "{{PRICE_ID}}",
+        Price: "price_1234",
         quantity: 1,
       },
     ],
@@ -63,9 +74,10 @@ app.post("/create-checkout-session", async (req, res) => {
     success_url: `http://localhost:8080?success=true`,
     cancel_url: `http://localhost:8080?canceled=true`,
   });
-
+  console.log('hit2')
   res.redirect(303, session.url);
 });
+
 
 app.get("*", (req, res) => {
   res.status(404).send({
