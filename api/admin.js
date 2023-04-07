@@ -11,6 +11,8 @@ const {
 const adminRouter = express.Router();
 adminRouter.patch("/users", requireUser, async (req, res, next) => {
   const secretCode = req.body.secretCode;
+  console.log(secretCode, typeof secretCode)
+  console.log(process.env.SECRET_CODE, typeof process.env.SECRET_CODE)
   try {
     if (secretCode === process.env.SECRET_CODE) {
       const user = await makeAdmin(req.user.id, secretCode);

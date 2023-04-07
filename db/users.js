@@ -176,7 +176,7 @@ async function makeStore(usersId){
       await client.query(
         `
             UPDATE users
-            SET isStore=true
+            SET "isStore"=true
             WHERE id=${usersId}
             RETURNING *;
           `
@@ -193,7 +193,7 @@ async function makeAdmin(usersId,secretCode){
     await client.query(
       `
           UPDATE users
-          SET isAdmin=true
+          SET "isAdmin"=true
           WHERE id=${usersId}
           RETURNING *;
         `
