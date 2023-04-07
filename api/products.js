@@ -15,7 +15,7 @@ const {
 
 router.post("/", requireUser, requireStore, async (req, res, next) => {
   const productData = {
-    categoryId: req.body.isPublic,
+    categoryId: req.body.categoryId,
     name: req.body.name,
     description: req.body.description,
     price: req.body.price,
