@@ -69,9 +69,7 @@ async function getAllProducts() {
 }
 async function getProductsByCategory(categoryId) {
   try {
-    const {
-      rows,
-    } = await client.query(
+    const { rows } = await client.query(
       `
         SELECT *
         FROM products
@@ -141,23 +139,22 @@ async function getProductsByUser(user_id) {
 }
 
 async function lowerQuantity(id, amount) {
-const product = await getProductById(id)
-const newQuantity = product.quantity - amount
-console.log(amount)
+  const product = await getProductById(id);
+  const newQuantity = product.quantity - amount;
+  console.log(amount);
   try {
-      await client.query(
-        `
+    await client.query(
+      `
               UPDATE products
               SET quantity=${newQuantity}
               WHERE id=${id};
             `
-      );
-    
+    );
+
     return await getProductById(id);
   } catch (error) {
     throw error;
   }
-
 }
 module.exports = {
   createProduct,
@@ -167,5 +164,5 @@ module.exports = {
   getProductsByCategory,
   deleteProducts,
   getAllProducts,
-  lowerQuantity
+  lowerQuantity,
 };
