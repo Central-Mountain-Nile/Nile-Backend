@@ -30,6 +30,7 @@ async function createProduct({
         `,
       [creatorId, categoryId, name, description, price, quantity, imgURL]
     );
+    console.log(products, "PRODUCTS");
     return products;
   } catch (error) {
     throw error;

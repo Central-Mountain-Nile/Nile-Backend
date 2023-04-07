@@ -9,8 +9,8 @@ function requireUser(req, res, next) {
     next();
   }
 }
-function requireStore(req,res,next) {
-  if(!req.user.isStore){
+function requireStore(req, res, next) {
+  if (!req.user.isStore) {
     res.status(401);
     next({
       name: "MissingStoreError",
@@ -20,8 +20,8 @@ function requireStore(req,res,next) {
     next();
   }
 }
-function requireAdmin(req,res,next) {
-  if(!req.user.isAdmin){
+function requireAdmin(req, res, next) {
+  if (!req.user.isAdmin) {
     res.status(401);
     next({
       name: "MissingAdminError",
@@ -32,9 +32,8 @@ function requireAdmin(req,res,next) {
   }
 }
 
-
 module.exports = {
   requireUser,
   requireStore,
-  requireAdmin
+  requireAdmin,
 };

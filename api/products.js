@@ -22,13 +22,12 @@ router.post("/", requireUser, requireStore, async (req, res, next) => {
     quantity: req.body.quantity,
     imgURL: req.body.imgURL,
   };
-  console.log(productData)
   productData.creatorId = req.user.id;
   try {
     const createdProduct = await createProduct(productData);
-    console.log(createdProduct)
+    console.log("hit123");
+    console.log(createdProduct);
     if (createdProduct) {
-
       res.send(createdProduct);
     } else {
       next({
@@ -44,55 +43,68 @@ router.post("/", requireUser, requireStore, async (req, res, next) => {
   }
 });
 
-router.patch("/:productId", requireUser, requireStore, async (req, res, next) => {
-  const { productId } = req.params;
-  const productData = {
-    categoryId: req.body.categoryId,
-    name: req.body.name,
-    description: req.body.description,
-    price: req.body.price,
-    quantity: req.body.quantity,
-    imgURL: req.body.imgURL,
-  };
-  try {
-    const product = await getProductById(productId);
-    if (product.creatorId === req.user.id) {
-      const result = await editProduct({ id: productId, ...productData });
-      res.send(result);
-    } else {
+router.patch(
+  "/:productId",
+  requireUser,
+  requireStore,
+  async (req, res, next) => {
+    const { productId } = req.params;
+    const productData = {
+      categoryId: req.body.categoryId,
+      name: req.body.name,
+      description: req.body.description,
+      price: req.body.price,
+      quantity: req.body.quantity,
+      imgURL: req.body.imgURL,
+    };
+    try {
+      const product = await getProductById(productId);
+      if (product.creatorId === req.user.id) {
+        const result = await editProduct({ id: productId, ...productData });
+        res.send(result);
+      } else {
+        next({
+          name: "updateError",
+          message: "user not authorized update product",
+        });
+      }
+    } catch (error) {
       next({
         name: "updateError",
-        message: "user not authorized update product",
+        message: "Could not update product",
       });
     }
-  } catch (error) {
-    next({
-      name: "updateError",
-      message: "Could not update product",
-    });
   }
-});
+);
 
-router.delete("/:productId", requireUser, requireStore, async (req, res, next) => {
-  try {
-    const { productId } = req.params;
-    const product = await getProductById(productId);
-    if(!product){
-      next({name:"productError",message:`product ${productId} des not exist`})
-  }
-    if (product.creatorId !== req.user.id) {
-      next({
-        name: "Deletion Error",
-        message: `product ${productId} does not belong to ${req.user.username} `,
-      });
-    } else {
-      const deletedProduct = await deleteProducts(productId);
-      res.send(deletedProduct);
+router.delete(
+  "/:productId",
+  requireUser,
+  requireStore,
+  async (req, res, next) => {
+    try {
+      const { productId } = req.params;
+      const product = await getProductById(productId);
+      if (!product) {
+        next({
+          name: "productError",
+          message: `product ${productId} des not exist`,
+        });
+      }
+      if (product.creatorId !== req.user.id) {
+        next({
+          name: "Deletion Error",
+          message: `product ${productId} does not belong to ${req.user.username} `,
+        });
+      } else {
+        const deletedProduct = await deleteProducts(productId);
+        res.send(deletedProduct);
+      }
+    } catch ({ name, message }) {
+      next({ name, message });
     }
-  } catch ({ name, message }) {
-    next({ name, message });
   }
-});
+);
 
 router.get("/products/user/:username/:pageNumber", async (req, res, next) => {
   const { pageNumber, username } = req.params;
@@ -110,8 +122,8 @@ router.get("/products/user/:username/:pageNumber", async (req, res, next) => {
       back = pageNumber * 25;
 
       const productPage = products.slice(front, back);
-      const count = products.length
-      const result = {products:productPage,count}
+      const count = products.length;
+      const result = { products: productPage, count };
       res.send(result);
     }
   } catch ({ name, message }) {
@@ -152,8 +164,8 @@ router.get("/category/:categoryId/:pageNumber", async (req, res, next) => {
     back = pageNumber * 25;
 
     const productPage = products.slice(front, back);
-    const count = products.length
-    const result = {products:productPage,count}
+    const count = products.length;
+    const result = { products: productPage, count };
     res.send(result);
   } catch (error) {
     throw error;
@@ -189,8 +201,8 @@ router.get(
       back = pageNumber * 25;
 
       const productPage = products.slice(front, back);
-      const count = products.length
-      const result = {products:productPage,count}
+      const count = products.length;
+      const result = { products: productPage, count };
       res.send(result);
     } catch (error) {
       throw error;
@@ -200,15 +212,14 @@ router.get(
 // GET /api/products/pageNumber
 router.get("/:pageNumber", async (req, res, next) => {
   try {
-
     const { pageNumber } = req.params;
     let products = await getAllProducts();
     front = (pageNumber - 1) * 25;
     back = pageNumber * 25;
 
     const productPage = products.slice(front, back);
-    const count = products.length
-    const result = {products:productPage,count}
+    const count = products.length;
+    const result = { products: productPage, count };
     res.send(result);
   } catch (error) {
     next({
@@ -235,8 +246,8 @@ router.get("/:pageNumber/:searchTerm", async (req, res, next) => {
     back = pageNumber * 25;
 
     const productPage = products.slice(front, back);
-    const count = products.length
-    const result = {products:productPage,count}
+    const count = products.length;
+    const result = { products: productPage, count };
     res.send(result);
   } catch (error) {
     next({
