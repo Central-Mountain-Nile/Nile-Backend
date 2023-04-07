@@ -22,10 +22,13 @@ router.post("/", requireUser, requireStore, async (req, res, next) => {
     quantity: req.body.quantity,
     imgURL: req.body.imgURL,
   };
+  console.log(productData)
   productData.creatorId = req.user.id;
   try {
     const createdProduct = await createProduct(productData);
+    console.log(createdProduct)
     if (createdProduct) {
+
       res.send(createdProduct);
     } else {
       next({
