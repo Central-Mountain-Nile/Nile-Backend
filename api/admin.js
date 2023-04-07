@@ -6,6 +6,7 @@ const {
   getPaymentByUser,
   getOrdersByUser,
   makeAdmin,
+  getAllUsers
 } = require("../db");
 
 const adminRouter = express.Router();
@@ -27,6 +28,7 @@ adminRouter.patch("/users", requireUser, async (req, res, next) => {
 
 adminRouter.get("/users", requireUser, requireAdmin, async (req, res, next) => {
   try {
+    console.log('hitgetALL')
     const users = await getAllUsers();
     res.send(users);
   } catch (error) {
