@@ -72,18 +72,14 @@ async function getUsersByUsername(username) {
 async function getAllUsers() {
   try {
     const {
-      rows: [user],
+      rows,
     } = await client.query(
       `
       SELECT * 
       FROM users;
-    `,
-      [username]
+    `
     );
-    if (password === user.password) {
-      delete user.password;
-      return user;
-    }
+      return rows;
   } catch (error) {
     console.log(error);
     throw error;
@@ -212,5 +208,6 @@ module.exports = {
   patchUsers,
   deleteUsers,
   makeStore,
-  makeAdmin
+  makeAdmin,
+  getAllUsers
 };
