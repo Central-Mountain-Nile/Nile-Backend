@@ -190,7 +190,7 @@ async function createInitialUsers() {
       const city = makeid(12);
       const state = makeid(5);
       const country = "USA";
-      const postalCode = Math.floor(Math.random() * 10000) + 1;
+      const postalCode = Math.ceil(Math.random() * 10000);
       const email = makeid(18);
       usersToCreate.push({
         firstName,
@@ -242,12 +242,12 @@ async function createInitialProducts() {
   console.log("Starting to create products...");
   let productsToCreate = [];
   for (let i = 0; i < 50; i++) {
-    const creatorId = Math.floor(Math.random() * (users.length - 1)) + 1;
-    const categoryId = Math.floor(Math.random() * (categories.length - 1)) + 1;
+    const creatorId = Math.ceil(Math.random() * (users.length));
+    const categoryId = Math.ceil(Math.random() * (categories.length));
     const name = "testProduct" + i;
     const description = "initial product " + i;
     const price = Math.floor(Math.random() * 100000) / 100;
-    const quantity = Math.floor(Math.random() * 500 + 1);
+    const quantity = Math.ceil(Math.random() * 500);
     const imgURL = "http://placeimg.com/640/480/nature";
     productsToCreate.push({
       creatorId,
@@ -277,7 +277,7 @@ async function createInitialDiscounts() {
       const productId = products[i].id;
       const name = "testDiscount" + i;
       const description = "initial discount " + i;
-      const discountPercent = Math.floor(Math.random() * 100) + 1;
+      const discountPercent = Math.ceil(Math.random() * 100);
       const active = true;
       const discount = await createDiscount({
         productId,
@@ -303,8 +303,8 @@ async function createInitialCarts() {
       //for every user
       for (let j = 0; j < 5; j++) {
         //add this many items to their cart
-        const productId = Math.floor(Math.random() * (products.length - 1)) + 1;
-        const quantity = Math.floor(Math.random() * 100) + 1;
+        const productId = Math.ceil(Math.random() * (products.length));
+        const quantity = Math.ceil(Math.random() * 100);
         const cartId = users[i].cart.id;
 
         await addToCart({ productId, cartId, quantity });
@@ -330,7 +330,7 @@ async function createInitialPayments() {
       const userId = users[i].id;
       const paymentType = makeid(5);
       const provider = makeid(8);
-      const accountNo = Math.floor(Math.random() * 1000) + 1;
+      const accountNo = Math.ceil(Math.random() * 1000);
       const expire = "03-30-2023";
       paymentsToCreate.push({
         userId,
