@@ -47,7 +47,7 @@ async function getProductById(id) {
       FROM products
       JOIN product_category
       ON products."categoryId"=product_category.id 
-        WHERE id = ${id}
+        WHERE products.id = ${id}
         `
     );
     return products;
