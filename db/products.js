@@ -42,9 +42,12 @@ async function getProductById(id) {
       rows: [products],
     } = await client.query(
       `
-        SELECT *
-        FROM products
-        WHERE id = ${id};
+      SELECT products.*, category_product.name AS "categoryName"
+      FROM products
+      JOIN product_category
+      ON products."categoryId"=product_category.id 
+        WHERE products.id = ${id}
+        AND products.active = true;
         `
     );
     return products;
@@ -57,9 +60,11 @@ async function getAllProducts() {
   try {
     const { rows } = await client.query(
       `
-        SELECT *
-        FROM products
-        WHERE active = true;
+      SELECT products.*, category_product.name AS "categoryName"
+      FROM products
+      JOIN product_category
+      ON products."categoryId"=product_category.id 
+        WHERE products.active = true;
         `
     );
     return rows;
@@ -75,7 +80,8 @@ async function getProductsByCategory(category) {
       FROM products
       JOIN product_category
       ON products."categoryId"=product_category.id 
-      WHERE product_category.name='${category}';
+      WHERE product_category.name='${category}'
+      AND products.active = true;
         `
     );
     console.log(rows)
@@ -128,10 +134,13 @@ async function getProductsByUser(user_id) {
   try {
     const { rows } = await client.query(
       `
-          SELECT *
-          FROM products
-          WHERE "creatorId" = $1;
-          `,
+      SELECT products.*, category_product.name AS "categoryName"
+      FROM products
+      JOIN product_category
+      ON products."categoryId"=product_category.id 
+      WHERE "creatorId" = $1
+      AND products.active = true;
+      `,
       [user_id]
     );
     return rows;
