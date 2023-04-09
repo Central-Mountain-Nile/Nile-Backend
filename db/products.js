@@ -71,9 +71,9 @@ async function getProductsByCategory(category) {
   try {
     const { rows } = await client.query(
       `
-      SELECT products.*, product_category.* 
-      FROM product_category 
-      JOIN products 
+      SELECT products.*
+      FROM products
+      JOIN product_category
       ON products."categoryId"=product_category.id 
       WHERE product_category.name='${category}';
         `
