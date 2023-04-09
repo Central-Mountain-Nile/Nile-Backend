@@ -137,14 +137,14 @@ router.get("/product/:productId", async (req, res, next) => {
   }
 });
 
-router.get("/category/:categoryId/:pageNumber", async (req, res, next) => {
-  const { pageNumber, categoryId } = req.params;
+router.get("/category/:category/:pageNumber", async (req, res, next) => {
+  const { pageNumber, category } = req.params;
   try {
-    let products = await getProductsByCategory(categoryId);
+    let products = await getProductsByCategory(category);
     if (!products) {
       next({
         name: "DoesNotExist",
-        message: `product not found`,
+        message: `category ${category} does not exist or has no products available`,
       });
       return;
     }
