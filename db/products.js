@@ -68,20 +68,25 @@ async function getAllProducts() {
     throw error;
   }
 }
-async function getProductsByCategory(categoryId) {
+async function getProductsByCategory(category) {
   try {
     const { rows } = await client.query(
       `
-        SELECT *
-        FROM products
-        WHERE "categoryId"=${categoryId};
+      SELECT products.*, product_category.* 
+      FROM product_category 
+      JOIN products 
+      ON products."categoryId"=product_category.id 
+      WHERE product_category.name='${category}';
         `
     );
+    console.log(rows)
     return rows;
   } catch (error) {
     throw error;
   }
 }
+
+
 async function deleteProducts(productId) {
   try {
     const { rows } = await client.query(
