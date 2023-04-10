@@ -25,14 +25,10 @@ router.post("/", requireUser, requireStore, async (req, res, next) => {
   };
   productData.creatorId = req.user.id;
   try {
-    console.log(category)
     const categories = await getAllCategories();
     let categoryId=null
-    console.log(category)
     for (let i = 0; i < categories.length; i++){
-      console.log(categories[i].name)
-      if(categories[i].name === category){
-        console.log(categories[i].name,"success")
+      if(categories[i].name === productData.category){
         categoryId = categories[i].id
       }
     }
@@ -40,7 +36,7 @@ router.post("/", requireUser, requireStore, async (req, res, next) => {
       next({name:'productError', message:`category ${category} was not found`})
     }
 
-
+productData.categoryId = categoryId
     const createdProduct = await createProduct(productData);
     if (createdProduct) {
       res.send(createdProduct);
