@@ -30,7 +30,6 @@ async function getAllCategories() {
     );
     return rows;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }

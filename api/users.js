@@ -115,7 +115,6 @@ router.get("/me", requireUser, async (req, res, next) => {
 //become store
 router.patch("/store", requireUser, async (req,res,next)=>{
   try{
-    console.log('hit')
     const user = await makeStore(req.user.id)
     res.send(user)
   }catch(error){

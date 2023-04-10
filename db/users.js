@@ -65,7 +65,6 @@ async function getUsersByUsername(username) {
     );
     return users;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -81,7 +80,6 @@ async function getAllUsers() {
     );
       return rows;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -96,11 +94,9 @@ async function getUsersById(usersId) {
       `,
       [usersId]
     );
-    console.log("users", users);
     delete users.password;
     return users;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -120,7 +116,6 @@ async function getUser({ username, password }) {
       return users;
     }
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -144,7 +139,6 @@ async function patchUsers({ usersId, ...fields }) {
 
     return await getUsersById(usersId);
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -162,7 +156,6 @@ async function deleteUsers(usersId) {
 
     return rows;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -179,7 +172,6 @@ async function makeStore(usersId){
       );
     return await getUsersById(usersId);
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -196,7 +188,6 @@ async function makeAdmin(usersId,secretCode){
     );
   return await getUsersById(usersId);
 } catch (error) {
-  console.log(error);
   throw error;
 }
 }

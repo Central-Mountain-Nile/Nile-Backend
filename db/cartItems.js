@@ -2,7 +2,6 @@ const client = require("./client");
 
 async function updateCartItem({ id, ...fields }) {
   try {
-    console.log(fields)
     const setString = Object.keys(fields)
       .map((key, index) => `"${key}"=$${index + 1}`)
       .join(", ");
@@ -39,7 +38,6 @@ async function deleteCartItem(id) {
 
 async function getCartItem(id){
   try {
-    console.log(id)
     const {
       rows: [cartItem],
     } = await client.query(`

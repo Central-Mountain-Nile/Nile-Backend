@@ -14,7 +14,6 @@ async function createOrderItems({ orderId, productId, quantity }) {
     );
     return payment;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -30,7 +29,6 @@ async function getOrderItemByProduct(productId){
     );
     return payment;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }

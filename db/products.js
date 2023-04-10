@@ -30,7 +30,6 @@ async function createProduct({
         `,
       [creatorId, categoryId, name, description, price, quantity, imgURL]
     );
-    console.log(products, "PRODUCTS");
     return products;
   } catch (error) {
     throw error;
@@ -84,7 +83,6 @@ async function getProductsByCategory(category) {
       AND products.active = true;
         `
     );
-    console.log(rows)
     return rows;
   } catch (error) {
     throw error;
@@ -154,7 +152,6 @@ async function getProductsByUser(user_id) {
 async function lowerQuantity(id, amount) {
   const product = await getProductById(id);
   const newQuantity = product.quantity - amount;
-  console.log(amount);
   try {
     await client.query(
       `
