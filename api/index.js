@@ -3,6 +3,10 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const { getUsersById } = require("../db");
 const { JWT_SECRET } = process.env;
+require("dotenv").config();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST);
+// const bodyParser = require("body-parser");
+// const cors = require("cors");
 
 // GET /api/health
 router.get("/health", async (req, res, next) => {
@@ -10,6 +14,29 @@ router.get("/health", async (req, res, next) => {
     res.send({ message: "Okay!" });
   } catch (error) {
     next(error);
+  }
+});
+router.post("/payment", async (req, res) => {
+  let { amount, id } = req.body;
+  try {
+    const payment = await stripe.paymentIntents.create({
+      amount,
+      currency: "USD",
+      description: "Nile Marketplace",
+      payment_method: id,
+      confirm: true,
+    });
+    console.log("Payment", payment);
+    res.json({
+      message: "Payment successful",
+      success: true,
+    });
+  } catch (error) {
+    console.log("Error", error);
+    res.json({
+      message: "Payment failed",
+      success: false,
+    });
   }
 });
 
