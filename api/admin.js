@@ -6,7 +6,10 @@ const {
   getPaymentByUser,
   getOrdersByUser,
   makeAdmin,
-  getAllUsers
+  getAllUsers,
+  getProductById,
+  editProduct,
+  deleteProducts,
 } = require("../db");
 
 const adminRouter = express.Router();
