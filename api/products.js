@@ -15,7 +15,6 @@ const {
 } = require("../db/");
 
 router.post("/", requireUser, requireStore, async (req, res, next) => {
-  console.log(req.body)
   const productData = {
     category: req.body.category,
     name: req.body.name,
@@ -29,9 +28,7 @@ router.post("/", requireUser, requireStore, async (req, res, next) => {
     const categories = await getAllCategories();
     let categoryId=null
     for (let i = 0; i < categories.length; i++){
-      console.log(categories[i].name)
       if(categories[i].name === productData.category){
-        console.log(categories[i].name,"success")
         categoryId = categories[i].id
       }
     }
