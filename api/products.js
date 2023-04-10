@@ -25,6 +25,7 @@ router.post("/", requireUser, requireStore, async (req, res, next) => {
   };
   productData.creatorId = req.user.id;
   try {
+    console.log(category)
     const categories = await getAllCategories();
     let categoryId=null
     console.log(category)
