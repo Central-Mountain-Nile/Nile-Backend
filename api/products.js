@@ -11,11 +11,12 @@ const {
   deleteProducts,
   getAllProducts,
   getUsersByUsername,
+  getAllCategories,
 } = require("../db/");
 
 router.post("/", requireUser, requireStore, async (req, res, next) => {
   const productData = {
-    categoryId: req.body.categoryId,
+    category: req.body.category,
     name: req.body.name,
     description: req.body.description,
     price: req.body.price,
@@ -24,6 +25,21 @@ router.post("/", requireUser, requireStore, async (req, res, next) => {
   };
   productData.creatorId = req.user.id;
   try {
+    const categories = await getAllCategories();
+    let categoryId=null
+    console.log(category)
+    for (let i = 0; i < categories.length; i++){
+      console.log(categories[i].name)
+      if(categories[i].name === category){
+        console.log(categories[i].name,"success")
+        categoryId = categories[i].id
+      }
+    }
+    if(!categoryId){
+      next({name:'productError', message:`category ${category} was not found`})
+    }
+
+
     const createdProduct = await createProduct(productData);
     console.log("hit123");
     console.log(createdProduct);
