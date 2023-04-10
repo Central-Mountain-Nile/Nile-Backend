@@ -39,7 +39,6 @@ async function getAllDiscounts() {
     );
     return rows;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -56,7 +55,6 @@ async function getDiscountsByProduct({ productId }) {
     );
     return rows;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -81,7 +79,6 @@ async function editDiscounts({ usersId, ...fields }) {
 
     return await getDiscountsByProduct(productId);
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -100,7 +97,6 @@ async function deleteDiscounts(discountId) {
 
     return rows;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }

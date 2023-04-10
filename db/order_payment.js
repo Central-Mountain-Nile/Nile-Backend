@@ -14,7 +14,7 @@ async function createOrderPayment({ orderId, provider, status }) {
     );
     return payment;
   } catch (error) {
-    console.log(error);
+
     throw error;
   }
 }

@@ -20,7 +20,6 @@ async function createPayment({
     );
     return user;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -37,7 +36,6 @@ async function getPaymentByUser(userId) {
 
     return rows;
   } catch (error) {
-    console.log(error);
     throw {
       name: "PaymentNotFoundError",
       message: "Could not find payment with userId given",
@@ -59,7 +57,6 @@ async function getPaymentById(id) {
 
     return userPayment;
   } catch (error) {
-    console.log(error);
     throw {
       name: "PaymentNotFoundError",
       message: "Could not find payment with id given",
@@ -85,7 +82,6 @@ async function patchPayment({ id, ...fields }) {
 
     return await getPaymentById(id);
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -102,7 +98,6 @@ async function deletePayment(id) {
 
     return rows;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }

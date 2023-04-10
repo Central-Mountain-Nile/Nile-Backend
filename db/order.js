@@ -85,7 +85,6 @@ async function updateOrder({ id, ...fields }) {
 
     return await getOrder(id);
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }
@@ -103,7 +102,6 @@ async function deleteOrder(usersId) {
 
     return rows;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 }

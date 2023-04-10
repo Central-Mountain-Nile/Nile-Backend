@@ -61,7 +61,6 @@ app.post("/create-payment-intent", async (req, res) => {
 });
 
 app.post("/create-checkout-session", async (req, res) => {
-  console.log('hit')
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
@@ -74,7 +73,6 @@ app.post("/create-checkout-session", async (req, res) => {
     success_url: `http://localhost:8080?success=true`,
     cancel_url: `http://localhost:8080?canceled=true`,
   });
-  console.log('hit2')
   res.redirect(303, session.url);
 });
 

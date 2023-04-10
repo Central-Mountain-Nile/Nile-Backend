@@ -41,8 +41,6 @@ router.post("/", requireUser, requireStore, async (req, res, next) => {
 
 
     const createdProduct = await createProduct(productData);
-    console.log("hit123");
-    console.log(createdProduct);
     if (createdProduct) {
       res.send(createdProduct);
     } else {

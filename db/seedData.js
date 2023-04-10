@@ -224,8 +224,8 @@ async function createInitialCategories() {
     { name: "auto" },
     { name: "gaming" },
     { name: "pets" },
-    { name: "sports/lifestyle" },
-    { name: "tools/appliances" },
+    { name: "lifestyle" },
+    { name: "appliances" },
     { name: "books" },
   ];
   try {
