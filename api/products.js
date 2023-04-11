@@ -112,26 +112,14 @@ router.delete(
   }
 );
 
-router.get("/products/user/:username/:pageNumber", async (req, res, next) => {
-  const { pageNumber, username } = req.params;
+router.get("/products/user/:username", async (req, res, next) => {
+  const { username } = req.params;
   const user = await getUsersByUsername(username);
   const userId = user.id;
   try {
     const products = await getProductsByUser(userId);
-    if (!products) {
-      next({
-        name: "DoesNotExist",
-        message: `product not found`,
-      });
-    } else {
-      front = (pageNumber - 1) * 25;
-      back = pageNumber * 25;
-
-      const productPage = products.slice(front, back);
-      const count = products.length;
-      const result = { products: productPage, count };
+      const result = products ;
       res.send(result);
-    }
   } catch ({ name, message }) {
     next({ name, message });
   }
