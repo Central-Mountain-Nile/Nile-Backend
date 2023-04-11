@@ -114,8 +114,11 @@ router.delete(
 
 router.get("/products/user/:username", async (req, res, next) => {
   const { username } = req.params;
+  console.log(username)
   const user = await getUsersByUsername(username);
+  console.log(user)
   const userId = user.id;
+  console.log(userId)
   try {
     const products = await getProductsByUser(userId);
       const result = products ;
