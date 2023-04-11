@@ -55,6 +55,7 @@ adminRouter.get(
 );
 
 // edit delete products
+//api/admin/product/:productId
 adminRouter.patch(
   "/product/:productId",
   requireUser,
