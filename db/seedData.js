@@ -248,7 +248,7 @@ async function createInitialProducts() {
     const description = "initial product " + i;
     const price = Math.floor(Math.random() * 100000) / 100;
     const quantity = Math.ceil(Math.random() * 500);
-    const imgURL = "https://picsum.photos/200/300";
+    const imgURL = `https://picsum.photos/id/${i + 100}/200/300`;
     productsToCreate.push({
       creatorId,
       categoryId,
