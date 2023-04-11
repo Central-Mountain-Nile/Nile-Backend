@@ -61,12 +61,7 @@ router.patch(
   async (req, res, next) => {
     const { productId } = req.params;
     const productData = {
-      categoryId: req.body.categoryId,
-      name: req.body.name,
-      description: req.body.description,
-      price: req.body.price,
-      quantity: req.body.quantity,
-      imgURL: req.body.imgURL,
+      ...req.body
     };
     try {
       const product = await getProductById(productId);
